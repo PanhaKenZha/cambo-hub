@@ -29,6 +29,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Warnings, strikes, suspensions and bans given to this user.
+     *
+     * @return HasMany<UserViolation, $this>
+     */
+    public function violations(): HasMany
+    {
+        return $this->hasMany(UserViolation::class);
+    }
+
+    /**
      * Roles are only given to administrators, so any role means admin access.
      */
     public function isAdmin(): bool

@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\PermissionAction;
 use App\Enums\PermissionArea;
+use App\Enums\PlatformModule;
+use App\Enums\ReportStatus;
 use App\Http\Controllers\Controller;
+use App\Models\ApprovalRequest;
 use App\Models\AuditLog;
+use App\Models\ContentReport;
 use App\Models\LoginHistory;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,6 +39,10 @@ class DashboardController extends Controller
                 'signInsToday' => LoginHistory::where('successful', true)->whereDate('created_at', today())->count(),
                 'failedSignInsLastDay' => LoginHistory::where('successful', false)->where('created_at', '>=', now()->subDay())->count(),
                 'suspiciousSignInsLastWeek' => LoginHistory::where('is_suspicious', true)->where('created_at', '>=', now()->subWeek())->count(),
+            ] : null,
+            'moderationStats' => $admin->can(PermissionArea::Approvals->permission(PermissionAction::View)) ? [
+                'pendingApprovals' => ApprovalRequest::pending()->whereIn('module', PlatformModule::visibleTo($admin))->count(),
+                'openReports' => ContentReport::where('status', ReportStatus::Open)->count(),
             ] : null,
             'recentAuditLogs' => $canViewAuditLogs ? AuditLog::with('user')->latest('id')->limit(8)->get() : null,
             'recentSignIns' => $admin->loginHistories()->latest('id')->limit(6)->get(),

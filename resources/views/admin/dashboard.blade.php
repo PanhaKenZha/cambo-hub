@@ -35,9 +35,15 @@
 </div>
 
 {{-- Key figures --}}
-<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 min-[1800px]:grid-cols-6">
+<div class="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
     <x-admin.stat label="Registered users" :value="$platformStats['registeredUsers']" :icon="$icons['users']" hint="All accounts on the platform" />
     <x-admin.stat label="New users today" :value="$platformStats['newUsersToday']" :icon="$icons['userPlus']" tone="violet" hint="Registrations since midnight" />
+    @if($moderationStats)
+        <x-admin.stat label="Pending approvals" :value="$moderationStats['pendingApprovals']" :icon="$icons['shield']"
+            :tone="$moderationStats['pendingApprovals'] > 0 ? 'amber' : 'green'" hint="Waiting for a moderator" :href="route('admin.approvals.index')" />
+        <x-admin.stat label="Open reports" :value="$moderationStats['openReports']" :icon="$icons['warning']"
+            :tone="$moderationStats['openReports'] > 0 ? 'red' : 'green'" hint="Content flagged by users" :href="route('admin.reports.index')" />
+    @endif
     @if($securityStats)
         <x-admin.stat label="Administrators" :value="$securityStats['administrators']" :icon="$icons['shield']" tone="green"
             :hint="$securityStats['suspendedAdministrators'].' suspended'" :href="route('admin.users.index')" />

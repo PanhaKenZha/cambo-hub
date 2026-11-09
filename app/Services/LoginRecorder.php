@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
  */
 class LoginRecorder
 {
-    public function __construct(private Request $request, private AuditLogger $auditLogger) {}
+    public function __construct(private Request $request, private AuditLogger $auditLogger, private PlatformSettings $settings) {}
 
     public function recordSuccess(User $user): LoginHistory
     {
@@ -32,7 +32,9 @@ class LoginRecorder
         $user->forceFill(['last_login_at' => now(), 'last_login_ip' => $ipAddress])->saveQuietly();
 
         if ($isSuspicious) {
-            $user->notify(new SuspiciousLoginDetected($loginHistory));
+            if ($this->settings->get('notifications.login_alerts')) {
+                $user->notify(new SuspiciousLoginDetected($loginHistory));
+            }
             $this->auditLogger->log('auth.suspicious_login', $user, newValues: ['ip_address' => $ipAddress], actor: $user);
         }
 

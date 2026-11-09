@@ -2,6 +2,9 @@
 
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\EnsureAdminSession;
+use App\Http\Middleware\EnsureModuleEnabled;
+use App\Http\Middleware\EnsurePlatformIsOnline;
+use App\Http\Middleware\EnsureRegistrationIsOpen;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,8 +21,12 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->appendToGroup('web', EnsureAccountIsActive::class);
-        $middleware->alias(['admin' => EnsureAdminSession::class]);
+        $middleware->appendToGroup('web', [EnsureAccountIsActive::class, EnsurePlatformIsOnline::class]);
+        $middleware->alias([
+            'admin' => EnsureAdminSession::class,
+            'module' => EnsureModuleEnabled::class,
+            'registration.open' => EnsureRegistrationIsOpen::class,
+        ]);
         $middleware->redirectGuestsTo(fn (Request $request): string => $request->is('admin', 'admin/*') ? route('admin.login') : route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
