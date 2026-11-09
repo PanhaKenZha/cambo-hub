@@ -17,9 +17,9 @@
 {{-- Header --}}
 <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
     <div>
-        <p class="text-sm font-medium text-slate-500">{{ now()->format('l, j F Y') }}</p>
-        <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{{ $greeting }}, {{ auth()->user()->name }}</h1>
-        <p class="mt-1 text-sm text-slate-500">Here's what is happening on Cambo Hub today.</p>
+        <p class="text-sm font-medium text-ink-muted">{{ now()->format('l, j F Y') }}</p>
+        <h1 class="mt-1 text-2xl font-bold tracking-tight text-ink sm:text-3xl">{{ $greeting }}, {{ auth()->user()->name }}</h1>
+        <p class="mt-1 text-sm text-ink-muted">Here's what is happening on Cambo Hub today.</p>
     </div>
     <div class="flex flex-wrap gap-2">
         @can('create', \App\Models\User::class)
@@ -52,39 +52,39 @@
 
 <div class="mt-6 grid gap-6 xl:grid-cols-3">
     {{-- Recent activity --}}
-    <section class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 xl:col-span-2">
-        <header class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+    <section class="overflow-hidden rounded-2xl bg-surface shadow-card ring-1 ring-line xl:col-span-2">
+        <header class="flex items-center justify-between gap-4 border-b border-line px-6 py-4">
             <div>
-                <h2 class="text-base font-semibold text-slate-900">Recent admin activity</h2>
-                <p class="text-sm text-slate-500">Latest actions from the audit log.</p>
+                <h2 class="text-base font-semibold text-ink">Recent admin activity</h2>
+                <p class="text-sm text-ink-muted">Latest actions from the audit log.</p>
             </div>
             @if($recentAuditLogs)
-                <a href="{{ route('admin.audit-logs.index') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-800">View all &rarr;</a>
+                <a href="{{ route('admin.audit-logs.index') }}" class="text-sm font-semibold rounded text-primary hover:text-primary-hover">View all &rarr;</a>
             @endif
         </header>
         @if($recentAuditLogs === null)
-            <p class="px-6 py-12 text-center text-sm text-slate-500">Your role does not include access to the audit log.</p>
+            <p class="px-6 py-12 text-center text-sm text-ink-muted">Your role does not include access to the audit log.</p>
         @elseif($recentAuditLogs->isEmpty())
-            <p class="px-6 py-12 text-center text-sm text-slate-500">No activity recorded yet.</p>
+            <p class="px-6 py-12 text-center text-sm text-ink-muted">No activity recorded yet.</p>
         @else
-            <ul class="divide-y divide-slate-100">
+            <ul class="divide-y divide-line">
                 @foreach($recentAuditLogs as $auditLog)
                     <li class="flex items-center gap-4 px-6 py-3.5">
-                        <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600">
+                        <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-muted text-xs font-semibold text-ink-muted">
                             {{ mb_strtoupper(mb_substr($auditLog->user?->name ?? 'S', 0, 1)) }}
                         </span>
                         <div class="min-w-0 flex-1">
-                            <p class="truncate text-sm text-slate-700">
-                                <span class="font-semibold text-slate-900">{{ $auditLog->user?->name ?? 'System' }}</span>
-                                <span class="text-slate-500">·</span>
+                            <p class="truncate text-sm text-ink-muted">
+                                <span class="font-semibold text-ink">{{ $auditLog->user?->name ?? 'System' }}</span>
+                                <span class="text-ink-muted">·</span>
                                 {{ \Illuminate\Support\Str::of($auditLog->action)->replace(['.', '_'], ' ')->ucfirst() }}
                                 @if($auditLog->auditable_type)
-                                    <span class="text-slate-500">on {{ class_basename($auditLog->auditable_type) }} #{{ $auditLog->auditable_id }}</span>
+                                    <span class="text-ink-muted">on {{ class_basename($auditLog->auditable_type) }} #{{ $auditLog->auditable_id }}</span>
                                 @endif
                             </p>
-                            <p class="text-xs text-slate-400">{{ $auditLog->ip_address }}</p>
+                            <p class="text-xs text-ink-subtle">{{ $auditLog->ip_address }}</p>
                         </div>
-                        <time class="shrink-0 text-xs whitespace-nowrap text-slate-500" datetime="{{ $auditLog->created_at->toIso8601String() }}">{{ $auditLog->created_at->diffForHumans() }}</time>
+                        <time class="shrink-0 text-xs whitespace-nowrap text-ink-muted" datetime="{{ $auditLog->created_at->toIso8601String() }}">{{ $auditLog->created_at->diffForHumans() }}</time>
                     </li>
                 @endforeach
             </ul>
@@ -93,17 +93,17 @@
 
     <div class="space-y-6">
         {{-- Your recent sign-ins --}}
-        <section class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-            <header class="border-b border-slate-100 px-6 py-4">
-                <h2 class="text-base font-semibold text-slate-900">Your recent sign-ins</h2>
-                <p class="text-sm text-slate-500">Contact a Super Admin if one wasn't you.</p>
+        <section class="overflow-hidden rounded-2xl bg-surface shadow-card ring-1 ring-line">
+            <header class="border-b border-line px-6 py-4">
+                <h2 class="text-base font-semibold text-ink">Your recent sign-ins</h2>
+                <p class="text-sm text-ink-muted">Contact a Super Admin if one wasn't you.</p>
             </header>
-            <ul class="divide-y divide-slate-100">
+            <ul class="divide-y divide-line">
                 @forelse($recentSignIns as $signIn)
                     <li class="flex items-center justify-between gap-3 px-6 py-3">
                         <div class="min-w-0">
-                            <p class="font-mono text-sm text-slate-700">{{ $signIn->ip_address }}</p>
-                            <p class="text-xs text-slate-400">{{ $signIn->created_at->diffForHumans() }}</p>
+                            <p class="font-mono text-sm text-ink-muted">{{ $signIn->ip_address }}</p>
+                            <p class="text-xs text-ink-subtle">{{ $signIn->created_at->diffForHumans() }}</p>
                         </div>
                         <div class="flex shrink-0 gap-1.5">
                             @if($signIn->is_suspicious)<x-admin.badge color="amber">New IP</x-admin.badge>@endif
@@ -115,25 +115,25 @@
                         </div>
                     </li>
                 @empty
-                    <li class="px-6 py-8 text-center text-sm text-slate-500">No sign-ins recorded yet.</li>
+                    <li class="px-6 py-8 text-center text-sm text-ink-muted">No sign-ins recorded yet.</li>
                 @endforelse
             </ul>
         </section>
 
         {{-- Access --}}
-        <section class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <section class="rounded-2xl bg-surface p-6 shadow-card ring-1 ring-line">
             <div class="flex items-center justify-between">
-                <h2 class="text-base font-semibold text-slate-900">Your access</h2>
+                <h2 class="text-base font-semibold text-ink">Your access</h2>
                 <x-admin.badge>{{ auth()->user()->roleLabel() }}</x-admin.badge>
             </div>
-            <ul class="mt-4 divide-y divide-slate-100">
+            <ul class="mt-4 divide-y divide-line">
                 @forelse($areaAccess as $areaLabel => $level)
-                    <li class="flex items-center justify-between py-2 text-sm text-slate-700">
+                    <li class="flex items-center justify-between py-2 text-sm text-ink-muted">
                         {{ $areaLabel }}
                         <x-admin.access-level :level="$level" />
                     </li>
                 @empty
-                    <li class="py-2 text-sm text-slate-500">Your role has no permissions yet.</li>
+                    <li class="py-2 text-sm text-ink-muted">Your role has no permissions yet.</li>
                 @endforelse
             </ul>
         </section>

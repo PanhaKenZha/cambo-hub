@@ -12,13 +12,14 @@
 @section('content')
 <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
     <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ $isEditing ? 'Edit role' : 'Create role' }}</h1>
-        <p class="mt-1 text-sm text-slate-500">{{ $isEditing ? 'Update the role details and permissions.' : 'Define a reusable set of permissions, then assign it to administrators.' }}</p>
+        <h1 class="text-2xl font-bold tracking-tight text-ink">{{ $isEditing ? 'Edit role' : 'Create role' }}</h1>
+        <p class="mt-1 text-sm text-ink-muted">{{ $isEditing ? 'Update the role details and permissions.' : 'Define a reusable set of permissions, then assign it to administrators.' }}</p>
     </div>
     <x-admin.button variant="secondary" :href="route('admin.roles.index')">&larr; Back to list</x-admin.button>
 </div>
 
-<form method="POST" action="{{ $isEditing ? route('admin.roles.update', $role) : route('admin.roles.store') }}" id="role-form" class="mt-6 space-y-6">
+<form method="POST" action="{{ $isEditing ? route('admin.roles.update', $role) : route('admin.roles.store') }}" id="role-form" class="mt-6 space-y-6" data-loading>
+    <x-ui.error-summary :ids="['permissions' => 'permissions-heading']" />
     @csrf
     @if($isEditing) @method('PUT') @endif
 
@@ -27,9 +28,9 @@
         <div class="grid gap-5 lg:grid-cols-2">
             <div>
                 @if($isEditing && $role->isSystem())
-                    <label for="name" class="block text-sm font-medium text-slate-700">Role name</label>
-                    <input id="name" value="{{ $role->label() }}" disabled class="mt-1.5 block w-full cursor-not-allowed rounded-lg border-0 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-500 ring-1 ring-slate-200 ring-inset">
-                    <p class="mt-1.5 text-xs text-slate-500">Built-in roles cannot be renamed.</p>
+                    <label for="name" class="block text-sm font-medium text-ink">Role name</label>
+                    <input id="name" value="{{ $role->label() }}" disabled aria-describedby="name-hint" class="form-control mt-1.5 rounded-lg bg-surface-muted text-ink-muted">
+                    <p id="name-hint" class="mt-1.5 text-xs text-ink-muted">Built-in roles cannot be renamed.</p>
                 @else
                     <x-admin.input name="name" label="Role name" :value="$role?->name" maxlength="50" placeholder="e.g. Content Editor" required />
                 @endif
@@ -37,52 +38,52 @@
             <x-admin.input name="description" label="Description" :value="$role?->description ?? ($role?->summary())" maxlength="255" placeholder="What is this role for?" />
         </div>
         @if($isEditing)
-            <p class="mt-4 text-xs text-slate-500">{{ $role->users_count }} {{ \Illuminate\Support\Str::plural('administrator', $role->users_count) }} currently {{ $role->users_count === 1 ? 'has' : 'have' }} this role. Changes apply to them immediately after saving.</p>
+            <p class="mt-4 text-xs text-ink-muted">{{ $role->users_count }} {{ \Illuminate\Support\Str::plural('administrator', $role->users_count) }} currently {{ $role->users_count === 1 ? 'has' : 'have' }} this role. Changes apply to them immediately after saving.</p>
         @endif
     </x-admin.card>
 
     {{-- Permissions --}}
-    <section class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200" data-permission-table>
-        <header class="flex flex-col gap-3 border-b border-slate-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+    <section class="overflow-hidden rounded-2xl bg-surface shadow-card ring-1 ring-line" data-permission-table>
+        <header class="flex flex-col gap-3 border-b border-line px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-base font-semibold text-slate-900">Permissions</h2>
-                <p class="mt-0.5 text-sm text-slate-500">Tick what this role may do in each area. Changes apply as soon as you save.</p>
+                <h2 id="permissions-heading" tabindex="-1" class="text-base font-semibold text-ink focus:outline-none">Permissions</h2>
+                <p class="mt-0.5 text-sm text-ink-muted">Tick what this role may do in each area. Changes apply as soon as you save.</p>
             </div>
             @if($isEditing && $role->builtInRole())
-                <button type="submit" form="reset-role-form" class="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-semibold text-red-600 ring-1 ring-red-200 hover:bg-red-50"
+                <button type="submit" form="reset-role-form" class="cursor-pointer rounded-lg px-3 py-1.5 text-sm font-semibold text-danger ring-1 ring-danger/30 hover:bg-danger-soft"
                         onclick="return confirm('Reset {{ $role->label() }} to its default permissions?')">Reset to default</button>
             @endif
         </header>
 
         <div class="flex flex-wrap items-center gap-2 px-6 pt-4">
-            <button type="button" data-select="all" class="cursor-pointer rounded-md px-2.5 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50">Select all</button>
-            <button type="button" data-select="none" class="cursor-pointer rounded-md px-2.5 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50">Clear all</button>
+            <button type="button" data-select="all" class="cursor-pointer rounded-md px-2.5 py-1 text-xs font-semibold text-ink ring-1 ring-line-strong hover:bg-surface-muted">Select all</button>
+            <button type="button" data-select="none" class="cursor-pointer rounded-md px-2.5 py-1 text-xs font-semibold text-ink ring-1 ring-line-strong hover:bg-surface-muted">Clear all</button>
             @if($hasRestrictedPermissions)
-                <span class="text-xs text-amber-700">Greyed-out permissions are ones you don't have yourself, so you can't change them.</span>
+                <span class="text-xs text-warning">Greyed-out permissions are ones you don't have yourself, so you can't change them.</span>
             @endif
-            @error('permissions')<span class="text-xs text-red-600" role="alert">{{ $message }}</span>@enderror
-            @error('permissions.*')<span class="text-xs text-red-600" role="alert">{{ $message }}</span>@enderror
+            @error('permissions')<span class="text-xs font-medium text-danger" role="alert">{{ $message }}</span>@enderror
+            @error('permissions.*')<span class="text-xs font-medium text-danger" role="alert">{{ $message }}</span>@enderror
         </div>
 
-        <div class="mt-4 overflow-x-auto">
+        <div class="mt-4 overflow-x-auto" role="region" aria-labelledby="permissions-heading" tabindex="0">
             <table class="min-w-full text-sm">
                 <thead>
-                    <tr class="border-y border-slate-200 bg-slate-50 text-xs font-semibold tracking-wide text-slate-500 uppercase">
-                        <th class="px-6 py-3 text-left">Area</th>
+                    <tr class="border-y border-line bg-surface-muted text-xs font-semibold tracking-wide text-ink-muted uppercase">
+                        <th scope="col" class="px-6 py-3 text-left">Area</th>
                         @foreach(PermissionAction::cases() as $action)
-                            <th class="px-4 py-3 text-center" title="{{ $action->description() }}">{{ $action->label() }}</th>
+                            <th scope="col" class="px-4 py-3 text-center" title="{{ $action->description() }}">{{ $action->label() }}</th>
                         @endforeach
-                        <th class="px-6 py-3 text-right"><span class="sr-only">Toggle row</span></th>
+                        <th scope="col" class="px-6 py-3 text-right"><span class="sr-only">Toggle row</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($areaGroups as $groupName => $areas)
-                        <tr class="bg-slate-50/60">
-                            <td colspan="{{ count(PermissionAction::cases()) + 2 }}" class="px-6 py-2 text-[11px] font-semibold tracking-[0.12em] text-brand-600 uppercase">{{ $groupName }}</td>
+                        <tr class="bg-surface-muted/60">
+                            <td colspan="{{ count(PermissionAction::cases()) + 2 }}" class="px-6 py-2 text-[11px] font-semibold tracking-[0.12em] text-primary uppercase">{{ $groupName }}</td>
                         </tr>
                         @foreach($areas as $area)
-                            <tr class="border-t border-slate-100 hover:bg-slate-50/70" data-permission-row>
-                                <td class="px-6 py-3 font-medium whitespace-nowrap text-slate-800">{{ $area->label() }}</td>
+                            <tr class="border-t border-line hover:bg-surface-muted/60" data-permission-row>
+                                <td class="px-6 py-3 font-medium whitespace-nowrap text-ink">{{ $area->label() }}</td>
                                 @foreach(PermissionAction::cases() as $action)
                                     <td class="px-4 py-3 text-center">
                                         @if($area->supports($action))
@@ -92,14 +93,14 @@
                                                    aria-label="{{ $area->label() }}: {{ $action->label() }}"
                                                    @checked(in_array($permissionName, $selectedPermissions, true))
                                                    @disabled(! $canChange)
-                                                   class="size-4.5 cursor-pointer rounded border-slate-300 accent-brand-600 disabled:cursor-not-allowed disabled:opacity-40">
+                                                   class="size-4.5 cursor-pointer rounded border-line-strong accent-brand-600 dark:accent-brand-300 disabled:cursor-not-allowed disabled:opacity-40">
                                         @else
-                                            <span class="text-slate-300" aria-hidden="true">—</span>
+                                            <span class="text-ink-subtle/60" aria-hidden="true">—</span>
                                         @endif
                                     </td>
                                 @endforeach
                                 <td class="px-6 py-3 text-right">
-                                    <button type="button" data-toggle-row class="cursor-pointer text-xs font-semibold text-brand-600 hover:text-brand-800">all</button>
+                                    <button type="button" data-toggle-row class="cursor-pointer text-xs font-semibold rounded text-primary hover:text-primary-hover">all</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -119,20 +120,20 @@
     @endcan
 @endif
 
-<div class="sticky bottom-0 mt-6 -mx-4 flex flex-col-reverse gap-3 border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:-mx-8 lg:px-8">
+<div class="sticky bottom-0 mt-6 -mx-4 flex flex-col-reverse gap-3 border-t border-line bg-surface/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:-mx-8 lg:px-8">
     <div>
         @if($isEditing)
             @can('delete', $role)
                 <button type="submit" form="delete-role-form" onclick="return confirm('Delete the role {{ $role->name }}? This cannot be undone.')"
-                        class="cursor-pointer text-sm font-semibold text-red-600 hover:text-red-800">Delete role</button>
+                        class="cursor-pointer rounded text-sm font-semibold text-danger hover:underline">Delete role</button>
             @elseif(! $role->isSystem())
-                <span class="text-xs text-slate-500">Remove this role from all administrators before deleting it.</span>
+                <span class="text-xs text-ink-muted">Remove this role from all administrators before deleting it.</span>
             @endcan
         @endif
     </div>
-    <div class="flex gap-3">
+    <div class="flex flex-wrap gap-3">
         <x-admin.button variant="secondary" :href="route('admin.roles.index')">Cancel</x-admin.button>
-        <x-admin.button form="role-form">{{ $isEditing ? 'Save changes' : 'Create role' }}</x-admin.button>
+        <x-admin.button form="role-form" loading-text="Saving…">{{ $isEditing ? 'Save changes' : 'Create role' }}</x-admin.button>
     </div>
 </div>
 

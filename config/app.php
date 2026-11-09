@@ -86,6 +86,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Supported Locales
+    |--------------------------------------------------------------------------
+    |
+    | Languages visitors can choose from the language switcher, keyed by
+    | locale code with the language's own name as the label.
+    |
+    */
+
+    'supported_locales' => [
+        'en' => 'English',
+        'km' => 'ខ្មែរ',
+        'zh' => '中文',
+        'fr' => 'Français',
+        'id' => 'Bahasa Indonesia',
+        'ja' => '日本語',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

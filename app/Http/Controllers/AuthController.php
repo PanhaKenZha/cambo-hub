@@ -34,7 +34,7 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::attemptWhen($credentials, fn (User $user): bool => ! $user->isAdmin(), $request->boolean('remember'))) {
             $loginRecorder->recordFailure($credentials['email'], 'invalid_credentials', User::where('email', $credentials['email'])->first());
 
             throw ValidationException::withMessages(['email' => 'The email or password is incorrect.']);
@@ -49,7 +49,9 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $loginRecorder->recordSuccess($user);
 
-        return redirect()->intended($user->isAdmin() ? route('admin.dashboard') : route('dashboard'));
+        $request->session()->forget('url.intended');
+
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request): RedirectResponse

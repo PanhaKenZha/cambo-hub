@@ -3,8 +3,8 @@
 @section('content')
 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
     <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Administrators</h1>
-        <p class="mt-1 text-sm text-slate-500">Manage who can access the admin panel and what they can do.</p>
+        <h1 class="text-2xl font-bold tracking-tight text-ink">Administrators</h1>
+        <p class="mt-1 text-sm text-ink-muted">Manage who can access the admin panel and what they can do.</p>
     </div>
     @can('create', \App\Models\User::class)
         <x-admin.button :href="route('admin.users.create')">
@@ -14,7 +14,8 @@
     @endcan
 </div>
 
-<form method="GET" action="{{ route('admin.users.index') }}" class="mt-6 grid gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_auto] lg:items-end">
+<form method="GET" action="{{ route('admin.users.index') }}" role="search" aria-label="Filter administrators" data-loading
+      class="mt-6 grid gap-4 rounded-2xl bg-surface p-4 shadow-card ring-1 ring-line sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_auto] lg:items-end">
     <x-admin.input name="search" label="Search" :value="$filters['search'] ?? ''" placeholder="Name or email" />
     <x-admin.select name="role" label="Role">
         <option value="">All roles</option>
@@ -30,47 +31,48 @@
     <x-admin.button variant="secondary">Filter</x-admin.button>
 </form>
 
-<div class="mt-6 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-50">
-                <tr class="text-left text-xs font-semibold tracking-wide text-slate-500 uppercase">
-                    <th class="px-6 py-3">Administrator</th>
-                    <th class="px-6 py-3">Role</th>
-                    <th class="px-6 py-3">2FA</th>
-                    <th class="px-6 py-3">Status</th>
-                    <th class="px-6 py-3">Last sign-in</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-                @forelse($admins as $admin)
-                    <tr class="hover:bg-slate-50/70">
-                        <td class="px-6 py-4">
-                            <a href="{{ route('admin.users.show', $admin) }}" class="group flex items-center gap-3">
-                                <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">{{ mb_strtoupper(mb_substr($admin->name, 0, 1)) }}</span>
-                                <span>
-                                    <span class="block font-medium text-slate-900 group-hover:text-brand-700">{{ $admin->name }}</span>
-                                    <span class="block text-slate-500">{{ $admin->email }}</span>
-                                </span>
-                            </a>
-                        </td>
-                        <td class="px-6 py-4"><x-admin.badge>{{ $admin->roleLabel() }}</x-admin.badge></td>
-                        <td class="px-6 py-4">
-                            @if($admin->hasTwoFactorEnabled())<x-admin.badge color="green">On</x-admin.badge>@else<x-admin.badge color="amber">Not set up</x-admin.badge>@endif
-                        </td>
-                        <td class="px-6 py-4">
-                            @if($admin->isSuspended())<x-admin.badge color="red">Suspended</x-admin.badge>@else<x-admin.badge color="green">Active</x-admin.badge>@endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $admin->last_login_at?->diffForHumans() ?? 'Never' }}</td>
-                    </tr>
-                @empty
-                    <tr><td colspan="5" class="px-6 py-12 text-center text-slate-500">No administrators match these filters.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-    @if($admins->hasPages())
-        <div class="border-t border-slate-200 px-6 py-3">{{ $admins->links() }}</div>
-    @endif
-</div>
+@if($admins->isEmpty())
+    <x-ui.empty-state class="mt-6" title="No administrators match these filters." description="Try a different search, role or status.">
+        @if(array_filter($filters ?? []))
+            <x-admin.button variant="secondary" :href="route('admin.users.index')">Clear filters</x-admin.button>
+        @endif
+    </x-ui.empty-state>
+@else
+    <x-ui.table label="Administrators" class="mt-6">
+        <x-slot:head>
+            <tr>
+                <th scope="col">Administrator</th>
+                <th scope="col">Role</th>
+                <th scope="col">2FA</th>
+                <th scope="col">Status</th>
+                <th scope="col">Last sign-in</th>
+            </tr>
+        </x-slot:head>
+        @foreach($admins as $admin)
+            <tr class="hover:bg-surface-muted/60">
+                <td data-label="Administrator">
+                    <a href="{{ route('admin.users.show', $admin) }}" class="group flex min-w-0 items-center gap-3 rounded-lg text-left">
+                        <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xs font-semibold text-primary">{{ mb_strtoupper(mb_substr($admin->name, 0, 1)) }}</span>
+                        <span class="min-w-0">
+                            <span class="block font-medium text-ink group-hover:text-primary">{{ $admin->name }}</span>
+                            <span class="block break-all text-ink-muted">{{ $admin->email }}</span>
+                        </span>
+                    </a>
+                </td>
+                <td data-label="Role"><x-admin.badge>{{ $admin->roleLabel() }}</x-admin.badge></td>
+                <td data-label="2FA">
+                    @if($admin->hasTwoFactorEnabled())<x-admin.badge color="green">On</x-admin.badge>@else<x-admin.badge color="amber">Not set up</x-admin.badge>@endif
+                </td>
+                <td data-label="Status">
+                    @if($admin->isSuspended())<x-admin.badge color="red">Suspended</x-admin.badge>@else<x-admin.badge color="green">Active</x-admin.badge>@endif
+                </td>
+                <td data-label="Last sign-in" class="whitespace-nowrap">{{ $admin->last_login_at?->diffForHumans() ?? 'Never' }}</td>
+            </tr>
+        @endforeach
+    </x-ui.table>
+@endif
+
+@if($admins->hasPages())
+    <div class="mt-4">{{ $admins->links() }}</div>
+@endif
 @endsection
