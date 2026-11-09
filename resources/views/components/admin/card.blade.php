@@ -1,11 +1,11 @@
 @props(['title' => null, 'description' => null])
 
-<section {{ $attributes->class('rounded-2xl bg-white shadow-sm ring-1 ring-slate-200') }}>
+<section {{ $attributes->class('rounded-2xl bg-surface shadow-card ring-1 ring-line') }}>
     @if($title)
-        <header class="border-b border-slate-100 px-6 py-4">
-            <h2 class="text-base font-semibold text-slate-900">{{ $title }}</h2>
+        <header class="border-b border-line px-6 py-4">
+            <h2 class="text-base font-semibold text-ink">{{ $title }}</h2>
             @if($description)
-                <p class="mt-1 text-sm text-slate-500">{{ $description }}</p>
+                <p class="mt-1 text-sm text-ink-muted">{{ $description }}</p>
             @endif
         </header>
     @endif

@@ -3,8 +3,8 @@
 @section('content')
 <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
     <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Pages</h1>
-        <p class="mt-1 text-sm text-slate-500">Custom pages such as About us, Terms and Privacy, in English and Khmer.</p>
+        <h1 class="text-2xl font-bold tracking-tight text-ink">Pages</h1>
+        <p class="mt-1 text-sm text-ink-muted">Custom pages such as About us, Terms and Privacy, in English and Khmer.</p>
     </div>
     @can(\App\Enums\PermissionArea::WebsiteContent->permission(\App\Enums\PermissionAction::Create))
         <x-admin.button :href="route('admin.cms.pages.create')">
@@ -14,7 +14,8 @@
     @endcan
 </div>
 
-<form method="GET" action="{{ route('admin.cms.pages.index') }}" class="mt-6 grid gap-3 sm:grid-cols-[2fr_1fr_auto] sm:items-end xl:max-w-3xl">
+<form method="GET" action="{{ route('admin.cms.pages.index') }}" role="search" aria-label="Filter pages" data-loading
+      class="mt-6 grid gap-3 rounded-2xl bg-surface p-4 shadow-card ring-1 ring-line sm:grid-cols-[2fr_1fr_auto] sm:items-end xl:max-w-3xl">
     <x-admin.input name="search" label="Search" :value="$filters['search'] ?? ''" placeholder="Title or address" />
     <x-admin.select name="status" label="Status">
         <option value="">Any status</option>
@@ -25,49 +26,54 @@
     <x-admin.button variant="secondary">Filter</x-admin.button>
 </form>
 
-<div class="mt-4 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-50">
-                <tr class="text-left text-xs font-semibold tracking-wide text-slate-500 uppercase">
-                    <th class="px-6 py-3">Page</th>
-                    <th class="px-6 py-3">Languages</th>
-                    <th class="px-6 py-3">Status</th>
-                    <th class="px-6 py-3">Last edited</th>
-                    <th class="px-6 py-3"><span class="sr-only">Actions</span></th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-                @forelse($pages as $page)
-                    <tr class="hover:bg-slate-50/70">
-                        <td class="px-6 py-4">
-                            <a href="{{ route('admin.cms.pages.edit', $page) }}" class="font-medium text-slate-900 hover:text-brand-700">{{ $page->translate('title', 'en') }}</a>
-                            <p class="font-mono text-xs text-slate-500">/pages/{{ $page->slug }}</p>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex gap-1">
-                                <x-admin.badge>EN</x-admin.badge>
-                                @if(filled($page->title['km'] ?? null))<x-admin.badge>KM</x-admin.badge>@else<x-admin.badge color="gray">KM missing</x-admin.badge>@endif
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <x-admin.badge :color="$page->stateColor()">{{ $page->stateLabel() }}</x-admin.badge>
-                            @if($page->stateLabel() === 'Scheduled')<p class="mt-1 text-xs text-slate-500">{{ $page->published_at->toDayDateTimeString() }}</p>@endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $page->updated_at->diffForHumans() }}<br><span class="text-xs">{{ $page->editor?->name }}</span></td>
-                        <td class="px-6 py-4 text-right whitespace-nowrap">
-                            <a href="{{ route('admin.cms.pages.preview', $page) }}" target="_blank" class="text-sm font-semibold text-slate-500 hover:text-slate-800">Preview</a>
-                            <a href="{{ route('admin.cms.pages.edit', $page) }}" class="ml-4 text-sm font-semibold text-brand-600 hover:text-brand-800">Edit</a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr><td colspan="5" class="px-6 py-16 text-center text-slate-500">No pages yet.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-    @if($pages->hasPages())
-        <div class="border-t border-slate-200 px-6 py-3">{{ $pages->links() }}</div>
-    @endif
-</div>
+@if($pages->isEmpty())
+    <x-ui.empty-state class="mt-4" title="No pages yet." />
+@else
+    <x-ui.table label="Pages" class="mt-4">
+        <x-slot:head>
+            <tr>
+                <th scope="col">Page</th>
+                <th scope="col">Languages</th>
+                <th scope="col">Status</th>
+                <th scope="col">Last edited</th>
+                <th scope="col"><span class="sr-only">Actions</span></th>
+            </tr>
+        </x-slot:head>
+        @foreach($pages as $page)
+            <tr class="hover:bg-surface-muted/60">
+                <td data-label="Page">
+                    <div class="min-w-0">
+                        <a href="{{ route('admin.cms.pages.edit', $page) }}" class="rounded font-medium text-ink hover:text-primary">{{ $page->translate('title', 'en') }}</a>
+                        <p class="font-mono text-xs break-all text-ink-muted">/pages/{{ $page->slug }}</p>
+                    </div>
+                </td>
+                <td data-label="Languages">
+                    <div class="flex gap-1">
+                        <x-admin.badge>EN</x-admin.badge>
+                        @if(filled($page->title['km'] ?? null))<x-admin.badge>KM</x-admin.badge>@else<x-admin.badge color="gray">KM missing</x-admin.badge>@endif
+                    </div>
+                </td>
+                <td data-label="Status">
+                    <div>
+                        <x-admin.badge :color="$page->stateColor()">{{ $page->stateLabel() }}</x-admin.badge>
+                        @if($page->stateLabel() === 'Scheduled')<p class="mt-1 text-xs text-ink-muted">{{ $page->published_at->toDayDateTimeString() }}</p>@endif
+                    </div>
+                </td>
+                <td data-label="Last edited" class="whitespace-nowrap">
+                    <div>{{ $page->updated_at->diffForHumans() }}<br><span class="text-xs text-ink-subtle">{{ $page->editor?->name }}</span></div>
+                </td>
+                <td data-label="Actions" class="whitespace-nowrap sm:text-right">
+                    <div>
+                        <a href="{{ route('admin.cms.pages.preview', $page) }}" target="_blank" class="rounded text-sm font-semibold text-ink-muted hover:text-ink">Preview</a>
+                        <a href="{{ route('admin.cms.pages.edit', $page) }}" class="ml-4 rounded text-sm font-semibold text-primary hover:text-primary-hover">Edit</a>
+                    </div>
+                </td>
+            </tr>
+        @endforeach
+    </x-ui.table>
+@endif
+
+@if($pages->hasPages())
+    <div class="mt-4">{{ $pages->links() }}</div>
+@endif
 @endsection

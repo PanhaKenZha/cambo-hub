@@ -154,13 +154,13 @@ class AdminAuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_admin_signing_in_on_public_login_is_sent_to_admin_panel(): void
+    public function test_admin_signing_in_on_public_login_is_rejected(): void
     {
         $admin = User::factory()->withTwoFactor()->admin()->create(['password' => 'password123']);
 
-        $this->post('/login', ['email' => $admin->email, 'password' => 'password123'])->assertRedirect('/admin');
-        $this->get('/admin')->assertRedirect('/admin/two-factor-challenge');
-        $this->get('/dashboard')->assertOk()->assertSee('Go to admin panel');
+        $this->post('/login', ['email' => $admin->email, 'password' => 'password123'])->assertSessionHasErrors('email');
+        $this->assertGuest();
+        $this->get('/admin')->assertRedirect('/admin/login');
     }
 
     public function test_admin_signed_in_through_public_site_must_still_pass_two_factor(): void

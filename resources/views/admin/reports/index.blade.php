@@ -2,8 +2,8 @@
 @section('title', 'Reports')
 @section('content')
 <div>
-    <h1 class="text-2xl font-bold tracking-tight text-slate-900">Content reports</h1>
-    <p class="mt-1 text-sm text-slate-500">Content users have flagged as breaking the platform rules.</p>
+    <h1 class="text-2xl font-bold tracking-tight text-ink">Content reports</h1>
+    <p class="mt-1 text-sm text-ink-muted">Content users have flagged as breaking the platform rules.</p>
 </div>
 
 <div class="mt-6">
@@ -13,7 +13,8 @@
     ])
 </div>
 
-<form method="GET" action="{{ route('admin.reports.index') }}" class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto] lg:items-end xl:max-w-3xl">
+<form method="GET" action="{{ route('admin.reports.index') }}" role="search" aria-label="Filter reports" data-loading
+      class="mt-4 grid gap-3 rounded-2xl bg-surface p-4 shadow-card ring-1 ring-line sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto] lg:items-end xl:max-w-3xl">
     <input type="hidden" name="status" value="{{ $activeStatus }}">
     <x-admin.select name="reason" label="Reason">
         <option value="">Any reason</option>
@@ -30,44 +31,39 @@
     <x-admin.button variant="secondary">Filter</x-admin.button>
 </form>
 
-<div class="mt-4 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 text-sm">
-            <thead class="bg-slate-50">
-                <tr class="text-left text-xs font-semibold tracking-wide text-slate-500 uppercase">
-                    <th class="px-6 py-3">Reported content</th>
-                    <th class="px-6 py-3">Reason</th>
-                    <th class="px-6 py-3">Reported by</th>
-                    <th class="px-6 py-3">When</th>
-                    <th class="px-6 py-3">Status</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100">
-                @forelse($reports as $report)
-                    <tr class="hover:bg-slate-50/70">
-                        <td class="px-6 py-4">
-                            <a href="{{ route('admin.reports.show', $report) }}" class="font-medium text-slate-900 hover:text-brand-700">{{ $report->title }}</a>
-                            <p class="text-xs text-slate-500">#{{ $report->id }} · {{ $report->module?->label() ?? class_basename($report->reportable_type) }}</p>
-                        </td>
-                        <td class="px-6 py-4"><x-admin.badge color="red">{{ $report->reason->label() }}</x-admin.badge></td>
-                        <td class="px-6 py-4 whitespace-nowrap text-slate-600">{{ $report->reporter?->name ?? 'Anonymous' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-slate-500">{{ $report->created_at->diffForHumans() }}</td>
-                        <td class="px-6 py-4"><x-admin.badge :color="$report->status->color()">{{ $report->status->label() }}</x-admin.badge></td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-16 text-center">
-                            <svg class="mx-auto size-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5"/></svg>
-                            <p class="mt-3 font-medium text-slate-700">{{ $activeStatus === 'open' ? 'No open reports' : 'Nothing here' }}</p>
-                            <p class="mt-1 text-slate-500">{{ $activeStatus === 'open' ? 'Reported content will appear here for review.' : 'No reports match these filters.' }}</p>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-    @if($reports->hasPages())
-        <div class="border-t border-slate-200 px-6 py-3">{{ $reports->links() }}</div>
-    @endif
-</div>
+@if($reports->isEmpty())
+    <x-ui.empty-state class="mt-4" icon="shield"
+        :title="$activeStatus === 'open' ? 'No open reports' : 'Nothing here'"
+        :description="$activeStatus === 'open' ? 'Reported content will appear here for review.' : 'No reports match these filters.'" />
+@else
+    <x-ui.table label="Content reports" class="mt-4">
+        <x-slot:head>
+            <tr>
+                <th scope="col">Reported content</th>
+                <th scope="col">Reason</th>
+                <th scope="col">Reported by</th>
+                <th scope="col">When</th>
+                <th scope="col">Status</th>
+            </tr>
+        </x-slot:head>
+        @foreach($reports as $report)
+            <tr class="hover:bg-surface-muted/60">
+                <td data-label="Reported content">
+                    <div class="min-w-0">
+                        <a href="{{ route('admin.reports.show', $report) }}" class="rounded font-medium text-ink hover:text-primary">{{ $report->title }}</a>
+                        <p class="text-xs text-ink-muted">#{{ $report->id }} · {{ $report->module?->label() ?? class_basename($report->reportable_type) }}</p>
+                    </div>
+                </td>
+                <td data-label="Reason"><x-admin.badge color="red">{{ $report->reason->label() }}</x-admin.badge></td>
+                <td data-label="Reported by" class="whitespace-nowrap text-ink">{{ $report->reporter?->name ?? 'Anonymous' }}</td>
+                <td data-label="When" class="whitespace-nowrap">{{ $report->created_at->diffForHumans() }}</td>
+                <td data-label="Status"><x-admin.badge :color="$report->status->color()">{{ $report->status->label() }}</x-admin.badge></td>
+            </tr>
+        @endforeach
+    </x-ui.table>
+@endif
+
+@if($reports->hasPages())
+    <div class="mt-4">{{ $reports->links() }}</div>
+@endif
 @endsection

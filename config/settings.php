@@ -113,6 +113,16 @@ return [
             ],
         ],
 
+        'homepage' => [
+            'label' => 'Homepage',
+            'description' => 'Search box on the public homepage. Sections, their order and text are managed in Website › Homepage.',
+            'icon' => 'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
+            'fields' => [
+                'search_placeholder' => ['label' => 'Search box placeholder', 'type' => 'text', 'default' => 'Search jobs, products, businesses, property, events…', 'rules' => ['nullable', 'string', 'max:100']],
+                'search_suggestions' => ['label' => 'Popular searches', 'type' => 'text', 'default' => 'Accountant, Apartment, Coffee, Smartphone, Workshop', 'rules' => ['nullable', 'string', 'max:255'], 'help' => 'Comma-separated. Shown as quick links under the search box.'],
+            ],
+        ],
+
         'footer' => [
             'label' => 'Footer',
             'description' => 'Text and social links at the bottom of every public page. Footer links are managed in Website › Menus.',

@@ -1,9 +1,9 @@
-@extends('layouts.app')
-@section('title', 'Under maintenance · '.$siteName)
+@extends('layouts.public')
+@section('title', __('Under maintenance'))
 @section('content')
-<section class="card">
-    <div class="eyebrow">BACK SOON</div>
-    <h1>We're doing some maintenance</h1>
-    <p>{{ $message }}</p>
-</section>
+<div class="mx-auto max-w-xl px-4 py-16 sm:px-6 sm:py-24">
+    <x-ui.empty-state image="images/backgrounds/maintenance.webp" :title="__('We\'re doing some maintenance')" :description="$message">
+        <p class="text-xs font-semibold tracking-[0.16em] text-primary uppercase">{{ __('BACK SOON') }}</p>
+    </x-ui.empty-state>
+</div>
 @endsection

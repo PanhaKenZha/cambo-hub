@@ -53,27 +53,21 @@
     $initials = \Illuminate\Support\Str::of($currentAdmin->name)->explode(' ')->take(2)->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode('');
 @endphp
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-100/70">
+<html lang="en" class="h-full bg-canvas">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Admin') · Cambo Hub Admin</title>
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="theme-color" content="#0D47A1">
-    <link rel="icon" href="{{ asset('images/branding/cambo-hub-mark.svg') }}" type="image/svg+xml">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css'])
+    <x-ui.document-head :title="new \Illuminate\Support\HtmlString($__env->yieldContent('title', 'Admin').' · Cambo Hub Admin')" robots="noindex, nofollow" />
 </head>
-<body class="h-full font-display text-slate-900 antialiased">
-    <input type="checkbox" id="admin-nav-toggle" class="peer sr-only">
+<body class="h-full bg-canvas font-display text-ink antialiased">
+    <a href="#admin-main" class="sr-only z-50 rounded-lg bg-surface px-4 py-2 text-sm font-semibold text-primary shadow-card focus:not-sr-only focus:fixed focus:top-3 focus:left-3">Skip to content</a>
+
+    {{-- Mobile menu state. Its accessible name comes from the "Open navigation" label in the top bar. --}}
+    <input type="checkbox" id="admin-nav-toggle" class="peer sr-only lg:hidden" aria-controls="admin-sidebar">
 
     {{-- Mobile backdrop --}}
-    <label for="admin-nav-toggle" class="fixed inset-0 z-30 hidden bg-slate-900/50 peer-checked:block lg:hidden!" aria-hidden="true"></label>
+    <label for="admin-nav-toggle" class="fixed inset-0 z-30 hidden bg-slate-950/60 peer-checked:block lg:hidden!" aria-hidden="true"></label>
 
-    {{-- Sidebar --}}
-    <aside class="fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col bg-brand-900 transition-transform peer-checked:translate-x-0 lg:translate-x-0">
+    {{-- Sidebar: hidden from keyboard and screen readers while collapsed off-screen on small viewports --}}
+    <aside id="admin-sidebar" class="invisible fixed inset-y-0 left-0 z-40 flex w-64 -translate-x-full flex-col bg-brand-900 transition-[translate,visibility] peer-checked:visible peer-checked:translate-x-0 lg:visible lg:translate-x-0 dark:border-r dark:border-white/10 dark:bg-brand-950">
         <div class="flex h-16 shrink-0 items-center gap-2.5 border-b border-white/10 px-5">
             <span class="flex size-9 items-center justify-center rounded-xl bg-white">
                 <img src="{{ asset('images/branding/cambo-hub-mark.svg') }}" class="size-7" alt="">
@@ -92,7 +86,7 @@
                     @php($isActive = $item['isActive'] ?? request()->routeIs($item['active']))
                     <a href="{{ route($item['route'], $item['params'] ?? []) }}" @if($isActive) aria-current="page" @endif
                        @class([
-                           'relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition',
+                           'relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand-200',
                            'bg-white/10 text-white before:absolute before:inset-y-2 before:-left-3 before:w-1 before:rounded-r-full before:bg-red-400' => $isActive,
                            'text-brand-200 hover:bg-white/5 hover:text-white' => ! $isActive,
                        ])>
@@ -122,43 +116,46 @@
 
     <div class="flex min-h-full flex-col lg:pl-64">
         {{-- Top bar --}}
-        <header class="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-4 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8">
-            <label for="admin-nav-toggle" class="-ml-1 cursor-pointer rounded-md p-1.5 text-slate-600 hover:bg-slate-100 lg:hidden">
+        <header class="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 border-b border-line bg-surface/95 px-4 backdrop-blur sm:gap-4 sm:px-6 lg:px-8">
+            <label for="admin-nav-toggle" class="-ml-1 cursor-pointer rounded-md p-1.5 text-ink-muted hover:bg-surface-muted hover:text-ink lg:hidden [body:has(#admin-nav-toggle:focus-visible)_&]:outline-3 [body:has(#admin-nav-toggle:focus-visible)_&]:outline-offset-2 [body:has(#admin-nav-toggle:focus-visible)_&]:outline-brand-500 dark:[body:has(#admin-nav-toggle:focus-visible)_&]:outline-brand-300">
                 <span class="sr-only">Open navigation</span>
                 <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
             </label>
 
             <nav class="flex min-w-0 flex-1 items-center gap-2 text-sm" aria-label="Breadcrumb">
-                <a href="{{ route('admin.dashboard') }}" class="hidden text-slate-400 hover:text-slate-600 sm:block">Admin</a>
-                <svg class="hidden size-4 shrink-0 text-slate-300 sm:block" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
-                <span class="truncate font-semibold text-slate-800">@yield('title', 'Admin')</span>
+                <a href="{{ route('admin.dashboard') }}" class="hidden rounded text-ink-subtle hover:text-ink sm:block">Admin</a>
+                <svg class="hidden size-4 shrink-0 text-line-strong sm:block" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
+                <span class="truncate font-semibold text-ink" aria-current="page">@yield('title', 'Admin')</span>
             </nav>
 
+            <x-ui.theme-toggle />
+
             <details class="group relative">
-                <summary class="flex cursor-pointer list-none items-center gap-3 rounded-full py-1 pr-2 pl-1 hover:bg-slate-100">
-                    <span class="flex size-9 items-center justify-center rounded-full bg-brand-700 text-xs font-semibold text-white">{{ $initials }}</span>
+                <summary class="flex cursor-pointer list-none items-center gap-3 rounded-full py-1 pr-2 pl-1 hover:bg-surface-muted [&::-webkit-details-marker]:hidden">
+                    <span class="flex size-9 items-center justify-center rounded-full bg-brand-700 text-xs font-semibold text-white dark:bg-brand-500">{{ $initials }}</span>
+                    <span class="sr-only sm:hidden">{{ $currentAdmin->name }}</span>
                     <span class="hidden text-left sm:block">
-                        <span class="block text-sm leading-tight font-semibold text-slate-900">{{ $currentAdmin->name }}</span>
-                        <span class="block text-xs text-slate-500">{{ $currentAdmin->roleLabel() }}</span>
+                        <span class="block text-sm leading-tight font-semibold text-ink">{{ $currentAdmin->name }}</span>
+                        <span class="block text-xs text-ink-muted">{{ $currentAdmin->roleLabel() }}</span>
                     </span>
-                    <svg class="size-4 text-slate-400 transition group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
+                    <svg class="size-4 text-ink-subtle transition group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
                 </summary>
-                <div class="absolute right-0 mt-2 w-64 overflow-hidden rounded-xl bg-white shadow-lg ring-1 ring-slate-200">
-                    <div class="border-b border-slate-100 px-4 py-3">
-                        <p class="truncate text-sm font-semibold text-slate-900">{{ $currentAdmin->name }}</p>
-                        <p class="truncate text-xs text-slate-500">{{ $currentAdmin->email }}</p>
+                <div class="absolute right-0 z-30 mt-2 w-64 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl bg-surface-raised shadow-lg ring-1 ring-line">
+                    <div class="border-b border-line px-4 py-3">
+                        <p class="truncate text-sm font-semibold text-ink">{{ $currentAdmin->name }}</p>
+                        <p class="truncate text-xs text-ink-muted">{{ $currentAdmin->email }}</p>
                     </div>
                     <div class="p-1.5">
                         @unless($currentAdmin->hasTwoFactorEnabled())
-                            <a href="{{ route('admin.two-factor.setup') }}" class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                                <svg class="size-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.04A11.96 11.96 0 013.6 6 12 12 0 003 9.75c0 5.6 3.82 10.3 9 11.62 5.18-1.33 9-6.03 9-11.62 0-1.31-.21-2.57-.6-3.75h-.15c-3.2 0-6.1-1.25-8.25-3.29z"/></svg>
+                            <a href="{{ route('admin.two-factor.setup') }}" class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-ink-muted hover:bg-surface-muted hover:text-ink">
+                                <svg class="size-5 text-ink-subtle" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.04A11.96 11.96 0 013.6 6 12 12 0 003 9.75c0 5.6 3.82 10.3 9 11.62 5.18-1.33 9-6.03 9-11.62 0-1.31-.21-2.57-.6-3.75h-.15c-3.2 0-6.1-1.25-8.25-3.29z"/></svg>
                                 Set up two-factor
                             </a>
                         @endunless
                         <form method="POST" action="{{ route('admin.logout') }}">
                             @csrf
-                            <button type="submit" class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
-                                <svg class="size-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+                            <button type="submit" class="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-ink-muted hover:bg-surface-muted hover:text-ink">
+                                <svg class="size-5 text-ink-subtle" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
                                 Sign out
                             </button>
                         </form>
@@ -167,30 +164,30 @@
             </details>
         </header>
 
-        <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <main id="admin-main" tabindex="-1" class="flex-1 px-4 py-6 focus:outline-none sm:px-6 lg:px-8">
             @if(app(\App\Services\PlatformSettings::class)->get('maintenance.enabled'))
-                <div class="mb-6 flex flex-col gap-3 rounded-xl border-l-4 border-red-500 bg-red-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between" role="status">
-                    <p class="flex items-center gap-2.5 text-sm text-red-900">
-                        <svg class="size-5 shrink-0 text-red-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/></svg>
+                <div class="mb-6 flex flex-col gap-3 rounded-xl border-l-4 border-danger bg-danger-soft px-4 py-3 sm:flex-row sm:items-center sm:justify-between" role="status">
+                    <p class="flex items-center gap-2.5 text-sm text-ink">
+                        <svg class="size-5 shrink-0 text-danger" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-5a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0v-4.5A.75.75 0 0 1 10 5Zm0 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/></svg>
                         Maintenance mode is on. The public website is closed to visitors.
                     </p>
                     @can(\App\Enums\PermissionArea::Settings->permission(\App\Enums\PermissionAction::View))
-                        <a href="{{ route('admin.settings.edit', 'maintenance') }}" class="inline-flex items-center rounded-lg bg-red-100 px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-red-900 hover:bg-red-200">Maintenance settings &rarr;</a>
+                        <a href="{{ route('admin.settings.edit', 'maintenance') }}" class="inline-flex items-center self-start rounded-lg bg-danger/15 px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-danger hover:bg-danger/25 sm:self-auto">Maintenance settings &rarr;</a>
                     @endcan
                 </div>
             @endif
             @unless($currentAdmin->hasTwoFactorEnabled())
-                <div class="mb-6 flex flex-col gap-3 rounded-xl border-l-4 border-amber-400 bg-amber-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between" role="status">
-                    <p class="flex items-center gap-2.5 text-sm text-amber-900">
-                        <svg class="size-5 shrink-0 text-amber-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.49 2.87a1.75 1.75 0 0 1 3.02 0l6.28 10.88A1.75 1.75 0 0 1 16.28 16.4H3.72a1.75 1.75 0 0 1-1.51-2.63L8.49 2.87ZM10 7a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 10 7Zm0 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/></svg>
+                <div class="mb-6 flex flex-col gap-3 rounded-xl border-l-4 border-warning bg-warning-soft px-4 py-3 sm:flex-row sm:items-center sm:justify-between" role="status">
+                    <p class="flex items-center gap-2.5 text-sm text-ink">
+                        <svg class="size-5 shrink-0 text-warning" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M8.49 2.87a1.75 1.75 0 0 1 3.02 0l6.28 10.88A1.75 1.75 0 0 1 16.28 16.4H3.72a1.75 1.75 0 0 1-1.51-2.63L8.49 2.87ZM10 7a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 10 7Zm0 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/></svg>
                         Two-factor authentication is not set up for your account.
                     </p>
-                    <a href="{{ route('admin.two-factor.setup') }}" class="inline-flex items-center rounded-lg bg-amber-100 px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-amber-900 hover:bg-amber-200">Set it up now &rarr;</a>
+                    <a href="{{ route('admin.two-factor.setup') }}" class="inline-flex items-center self-start rounded-lg bg-warning/15 px-3 py-1.5 text-sm font-semibold whitespace-nowrap text-warning hover:bg-warning/25 sm:self-auto">Set it up now &rarr;</a>
                 </div>
             @endunless
             @if(session('status'))
-                <div class="mb-6 flex items-center gap-2.5 rounded-xl border-l-4 border-emerald-400 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="status">
-                    <svg class="size-5 shrink-0 text-emerald-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.86-9.81a.75.75 0 0 0-1.22-.88l-3.24 4.48-1.6-1.6a.75.75 0 1 0-1.06 1.06l2.22 2.22a.75.75 0 0 0 1.14-.09l3.76-5.2Z" clip-rule="evenodd"/></svg>
+                <div class="mb-6 flex items-center gap-2.5 rounded-xl border-l-4 border-success bg-success-soft px-4 py-3 text-sm text-success" role="status">
+                    <svg class="size-5 shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.86-9.81a.75.75 0 0 0-1.22-.88l-3.24 4.48-1.6-1.6a.75.75 0 1 0-1.06 1.06l2.22 2.22a.75.75 0 0 0 1.14-.09l3.76-5.2Z" clip-rule="evenodd"/></svg>
                     {{ session('status') }}
                 </div>
             @endif

@@ -27,9 +27,16 @@ class Banner extends Model
             && ($this->ends_at === null || $this->ends_at->isFuture());
     }
 
+    /**
+     * Uploaded images live on the public disk; seeded defaults point at bundled files in public/images.
+     */
     public function imageUrl(): ?string
     {
-        return $this->image_path ? Storage::disk('public')->url($this->image_path) : null;
+        return match (true) {
+            blank($this->image_path) => null,
+            str_starts_with($this->image_path, 'images/') => asset($this->image_path),
+            default => Storage::disk('public')->url($this->image_path),
+        };
     }
 
     /**

@@ -176,7 +176,7 @@ class CmsSiteStructureTest extends TestCase
 
         $this->seed(CmsSeeder::class);
 
-        $this->assertSame(8, HomepageSection::count());
+        $this->assertSame(count(HomepageSectionType::cases()), HomepageSection::count());
         $this->assertSame(4, Page::count());
         $this->assertSame('Custom hero', HomepageSection::first()->translate('title', 'en'));
     }
