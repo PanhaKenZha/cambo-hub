@@ -3,6 +3,7 @@
 use App\Enums\PermissionAction;
 use App\Enums\PermissionArea;
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminPasswordController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AppealController;
 use App\Http\Controllers\Admin\ApprovalController;
@@ -31,6 +32,11 @@ Route::post('/login', [AdminAuthController::class, 'store'])->middleware('thrott
 Route::get('/two-factor-challenge', [TwoFactorChallengeController::class, 'create'])->name('two-factor.challenge');
 Route::post('/two-factor-challenge', [TwoFactorChallengeController::class, 'store'])->middleware('throttle:5,1');
 Route::post('/logout', [AdminAuthController::class, 'destroy'])->middleware('auth')->name('logout');
+
+Route::get('/forgot-password', [AdminPasswordController::class, 'create'])->name('password.request');
+Route::post('/forgot-password', [AdminPasswordController::class, 'store'])->middleware('throttle:5,1')->name('password.email');
+Route::get('/reset-password/{token}', [AdminPasswordController::class, 'edit'])->name('password.reset');
+Route::post('/reset-password', [AdminPasswordController::class, 'update'])->middleware('throttle:5,1')->name('password.update');
 
 Route::middleware('admin:enrolling')->group(function () {
     Route::get('/two-factor', [TwoFactorSetupController::class, 'prompt'])->name('two-factor.prompt');

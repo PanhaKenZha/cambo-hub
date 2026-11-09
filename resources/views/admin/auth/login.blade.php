@@ -22,7 +22,7 @@
             <div>
                 <div class="flex items-center justify-between gap-3">
                     <label for="password" class="block text-sm font-medium text-ink">Password<span class="ml-0.5 text-accent" aria-hidden="true">*</span></label>
-                    <a href="{{ route('password.request') }}" class="rounded text-sm font-medium text-primary hover:text-primary-hover">Forgot password?</a>
+                    <a href="{{ route('admin.password.request') }}" class="rounded text-sm font-medium text-primary hover:text-primary-hover">Forgot password?</a>
                 </div>
                 <input id="password" name="password" type="password" autocomplete="current-password" required
                        @if($passwordError) aria-invalid="true" aria-describedby="password-error" @endif
