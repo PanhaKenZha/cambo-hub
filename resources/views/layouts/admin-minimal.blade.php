@@ -6,7 +6,7 @@
     <title>@yield('title', 'Admin') · Cambo Hub Admin</title>
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#0D47A1">
-    <link rel="icon" href="{{ asset('images/cambo-hub-mark.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('images/branding/cambo-hub-mark.svg') }}" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
     <header class="flex items-center justify-between px-5 py-5 sm:px-8 lg:px-12">
         <a href="{{ route('admin.login') }}" class="group inline-flex items-center gap-2.5" aria-label="Cambo Hub Admin sign in">
             <span class="flex size-9 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-slate-200 transition group-hover:ring-brand-300">
-                <img src="{{ asset('images/cambo-hub-mark.svg') }}" class="size-7" alt="">
+                <img src="{{ asset('images/branding/cambo-hub-mark.svg') }}" class="size-7" alt="">
             </span>
             <span class="text-base font-extrabold tracking-tight text-slate-900">Cambo<span class="text-cambo-red">Hub</span></span>
         </a>
