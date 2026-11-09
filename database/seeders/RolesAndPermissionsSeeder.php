@@ -28,6 +28,9 @@ class RolesAndPermissionsSeeder extends Seeder
         // Remove permissions that no longer exist in the catalogue.
         Permission::query()->where('guard_name', 'web')->whereNotIn('name', $permissionNames)->delete();
 
+        // DatabaseSeeder disables model events, so permission writes do not invalidate the cache.
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
         foreach (AdminRole::cases() as $adminRole) {
             $role = Role::findOrCreate($adminRole->value, 'web');
 
