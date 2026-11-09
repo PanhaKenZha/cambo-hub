@@ -7,6 +7,11 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AppealController;
 use App\Http\Controllers\Admin\ApprovalController;
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\Cms\AnnouncementController;
+use App\Http\Controllers\Admin\Cms\BannerController;
+use App\Http\Controllers\Admin\Cms\HomepageSectionController;
+use App\Http\Controllers\Admin\Cms\MenuItemController;
+use App\Http\Controllers\Admin\Cms\PageController as CmsPageController;
 use App\Http\Controllers\Admin\ContentReportController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\RoleController;
@@ -58,6 +63,30 @@ Route::middleware('admin')->group(function () {
     Route::get('/audit-logs', [AuditLogController::class, 'index'])
         ->middleware('can:'.PermissionArea::AuditLogs->permission(PermissionAction::View))
         ->name('audit-logs.index');
+
+    /*
+    | Website content (CMS). Viewing needs cms.view; controllers check create / edit / delete,
+    | and publishing pages needs cms.manage.
+    */
+    Route::middleware('can:'.PermissionArea::WebsiteContent->permission(PermissionAction::View))
+        ->prefix('cms')
+        ->name('cms.')
+        ->group(function () {
+            Route::resource('pages', CmsPageController::class)->except('show');
+            Route::get('/pages/{page}/preview', [CmsPageController::class, 'preview'])->name('pages.preview');
+
+            Route::resource('menus', MenuItemController::class)->except('show')->parameters(['menus' => 'menuItem']);
+            Route::post('/menus/{menuItem}/move', [MenuItemController::class, 'move'])->name('menus.move');
+
+            Route::resource('banners', BannerController::class)->except('show');
+            Route::post('/banners/{banner}/move', [BannerController::class, 'move'])->name('banners.move');
+
+            Route::resource('homepage', HomepageSectionController::class)->except('show')->parameters(['homepage' => 'section']);
+            Route::post('/homepage/{section}/move', [HomepageSectionController::class, 'move'])->name('homepage.move');
+            Route::post('/homepage/{section}/toggle', [HomepageSectionController::class, 'toggle'])->name('homepage.toggle');
+
+            Route::resource('announcements', AnnouncementController::class)->except('show');
+        });
 
     Route::middleware('can:'.PermissionArea::Settings->permission(PermissionAction::View))->group(function () {
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

@@ -6,13 +6,20 @@
     $navigation = [
         ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'active' => 'admin.dashboard', 'permission' => PermissionArea::Dashboard->permission(PermissionAction::View),
             'icon' => 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z'],
-        ['heading' => 'Security'],
-        ['label' => 'Administrators', 'route' => 'admin.users.index', 'active' => 'admin.users.*', 'permission' => PermissionArea::Administrators->permission(PermissionAction::View),
-            'icon' => 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z'],
-        ['label' => 'Roles & permissions', 'route' => 'admin.roles.index', 'active' => 'admin.roles.*', 'permission' => PermissionArea::Roles->permission(PermissionAction::View),
-            'icon' => 'M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.03 5.91c-.56-.1-1.16.02-1.56.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.82c0-.6.24-1.17.66-1.59l6.16-6.16c.41-.4.53-1 .43-1.56A6 6 0 1121.75 8.25z'],
-        ['label' => 'Audit logs', 'route' => 'admin.audit-logs.index', 'active' => 'admin.audit-logs.*', 'permission' => PermissionArea::AuditLogs->permission(PermissionAction::View),
-            'icon' => 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z'],
+        ['heading' => 'Website'],
+        ['label' => 'Pages', 'route' => 'admin.cms.pages.index', 'active' => 'admin.cms.pages.*', 'permission' => PermissionArea::WebsiteContent->permission(PermissionAction::View),
+            'icon' => 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z'],
+        ['label' => 'Homepage', 'route' => 'admin.cms.homepage.index', 'active' => 'admin.cms.homepage.*', 'permission' => PermissionArea::WebsiteContent->permission(PermissionAction::View),
+            'icon' => 'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25'],
+        ['label' => 'Menus', 'route' => 'admin.cms.menus.index', 'active' => 'admin.cms.menus.*', 'permission' => PermissionArea::WebsiteContent->permission(PermissionAction::View),
+            'icon' => 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12'],
+        ['label' => 'Banners', 'route' => 'admin.cms.banners.index', 'active' => 'admin.cms.banners.*', 'permission' => PermissionArea::WebsiteContent->permission(PermissionAction::View),
+            'icon' => 'M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'],
+        ['label' => 'Announcements', 'route' => 'admin.cms.announcements.index', 'active' => 'admin.cms.announcements.*', 'permission' => PermissionArea::WebsiteContent->permission(PermissionAction::View),
+            'icon' => 'M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46'],
+        ['label' => 'Footer', 'route' => 'admin.settings.edit', 'params' => ['group' => 'footer'], 'permission' => PermissionArea::Settings->permission(PermissionAction::View),
+            'isActive' => request()->route('group') === 'footer',
+            'icon' => 'M3.75 6A2.25 2.25 0 016 3.75h12A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6zM3.75 15.75h16.5'],
         ['heading' => 'Moderation'],
         ['label' => 'Approvals', 'route' => 'admin.approvals.index', 'active' => 'admin.approvals.*', 'permission' => PermissionArea::Approvals->permission(PermissionAction::View),
             'badge' => fn () => \App\Models\ApprovalRequest::pending()->whereIn('module', \App\Enums\PlatformModule::visibleTo($currentAdmin))->count(),
@@ -27,11 +34,18 @@
             'icon' => 'M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.971zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.971z'],
         ['heading' => 'Configuration'],
         ['label' => 'Platform settings', 'route' => 'admin.settings.index', 'permission' => PermissionArea::Settings->permission(PermissionAction::View),
-            'isActive' => request()->routeIs('admin.settings.*') && request()->route('group') !== 'modules',
+            'isActive' => request()->routeIs('admin.settings.*') && ! in_array(request()->route('group'), ['modules', 'footer'], true),
             'icon' => 'M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z M15 12a3 3 0 11-6 0 3 3 0 016 0z'],
         ['label' => 'Modules', 'route' => 'admin.settings.edit', 'params' => ['group' => 'modules'], 'permission' => PermissionArea::Settings->permission(PermissionAction::View),
             'isActive' => request()->route('group') === 'modules',
             'icon' => config('settings.modules.icon')],
+        ['heading' => 'Security'],
+        ['label' => 'Administrators', 'route' => 'admin.users.index', 'active' => 'admin.users.*', 'permission' => PermissionArea::Administrators->permission(PermissionAction::View),
+            'icon' => 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z'],
+        ['label' => 'Roles & permissions', 'route' => 'admin.roles.index', 'active' => 'admin.roles.*', 'permission' => PermissionArea::Roles->permission(PermissionAction::View),
+            'icon' => 'M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.03 5.91c-.56-.1-1.16.02-1.56.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.82c0-.6.24-1.17.66-1.59l6.16-6.16c.41-.4.53-1 .43-1.56A6 6 0 1121.75 8.25z'],
+        ['label' => 'Audit logs', 'route' => 'admin.audit-logs.index', 'active' => 'admin.audit-logs.*', 'permission' => PermissionArea::AuditLogs->permission(PermissionAction::View),
+            'icon' => 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z'],
     ];
     $visibleNavigation = collect($navigation)
         ->filter(fn (array $item) => isset($item['heading']) || $currentAdmin->can($item['permission']))
@@ -70,7 +84,7 @@
             </span>
         </div>
 
-        <nav class="flex-1 space-y-0.5 overflow-y-auto px-3 py-5" aria-label="Admin navigation">
+        <nav class="flex-1 space-y-0.5 overflow-y-auto px-3 py-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Admin navigation">
             @foreach($visibleNavigation as $item)
                 @if(isset($item['heading']))
                     <p class="px-3 pt-6 pb-2 text-[10px] font-semibold tracking-[0.15em] text-brand-400 uppercase">{{ $item['heading'] }}</p>

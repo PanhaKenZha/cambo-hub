@@ -113,6 +113,22 @@ return [
             ],
         ],
 
+        'footer' => [
+            'label' => 'Footer',
+            'description' => 'Text and social links at the bottom of every public page. Footer links are managed in Website › Menus.',
+            'icon' => 'M3.75 6A2.25 2.25 0 016 3.75h12A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6zM3.75 15.75h16.5',
+            'fields' => [
+                'about_en' => ['label' => 'About text (English)', 'type' => 'textarea', 'default' => 'Cambo Hub brings news, jobs, shopping, businesses and services for Cambodia together in one place.', 'rules' => ['nullable', 'string', 'max:500']],
+                'about_km' => ['label' => 'About text (Khmer)', 'type' => 'textarea', 'default' => '', 'rules' => ['nullable', 'string', 'max:500'], 'help' => 'Optional — the English text is shown when empty.'],
+                'copyright' => ['label' => 'Copyright line', 'type' => 'text', 'default' => '© {year} Cambo Hub. All rights reserved.', 'rules' => ['required', 'string', 'max:150'], 'help' => '{year} is replaced with the current year.'],
+                'facebook_url' => ['label' => 'Facebook page', 'type' => 'url', 'default' => '', 'rules' => ['nullable', 'url', 'max:255']],
+                'telegram_url' => ['label' => 'Telegram channel', 'type' => 'url', 'default' => '', 'rules' => ['nullable', 'url', 'max:255']],
+                'youtube_url' => ['label' => 'YouTube channel', 'type' => 'url', 'default' => '', 'rules' => ['nullable', 'url', 'max:255']],
+                'tiktok_url' => ['label' => 'TikTok', 'type' => 'url', 'default' => '', 'rules' => ['nullable', 'url', 'max:255']],
+                'linkedin_url' => ['label' => 'LinkedIn', 'type' => 'url', 'default' => '', 'rules' => ['nullable', 'url', 'max:255']],
+            ],
+        ],
+
         'maintenance' => [
             'label' => 'Maintenance',
             'description' => 'Temporarily close the public website. Administrators keep full access.',

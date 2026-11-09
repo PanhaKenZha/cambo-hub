@@ -63,3 +63,16 @@ footer strong { color: var(--primary); } footer strong span { color: var(--red);
     main { padding-top: 16px; } footer { font-size: 10px; }
 }
 @media(prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+/* CMS pages (resources/views/pages/show.blade.php) */
+.page-content:has(.cms-page) { max-width: 820px; }
+.page-content > .cms-page { max-width: none; }
+.cms-body { color: var(--ink); line-height: 1.8; }
+.cms-body h2 { font-size: 21px; margin: 28px 0 10px; }
+.cms-body h3 { font-size: 17px; margin: 22px 0 8px; }
+.cms-body p { color: var(--ink); margin: 0 0 16px; }
+.cms-body ul, .cms-body ol { margin: 0 0 16px; padding-left: 22px; }
+.cms-body li { margin: 4px 0; }
+.cms-body blockquote { margin: 0 0 16px; padding: 10px 16px; border-left: 4px solid var(--accent); background: #eef5ff; border-radius: 0 8px 8px 0; }
+.cms-body code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: 13px; }
+.cms-body table { width: 100%; border-collapse: collapse; margin: 0 0 16px; }
+.cms-body th, .cms-body td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
