@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\LoginRecorder;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,18 +28,28 @@ class AuthController extends Controller
         return redirect()->route('dashboard');
     }
 
-    public function login(Request $request): RedirectResponse
+    public function login(Request $request, LoginRecorder $loginRecorder): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            $loginRecorder->recordFailure($credentials['email'], 'invalid_credentials', User::where('email', $credentials['email'])->first());
+
             throw ValidationException::withMessages(['email' => 'The email or password is incorrect.']);
         }
-        $request->session()->regenerate();
+        $user = Auth::user();
+        if ($user->isSuspended()) {
+            Auth::logout();
+            $loginRecorder->recordFailure($credentials['email'], 'suspended', $user);
 
-        return redirect()->intended(route('dashboard'));
+            throw ValidationException::withMessages(['email' => 'This account has been suspended.']);
+        }
+        $request->session()->regenerate();
+        $loginRecorder->recordSuccess($user);
+
+        return redirect()->intended($user->isAdmin() ? route('admin.dashboard') : route('dashboard'));
     }
 
     public function logout(Request $request): RedirectResponse
