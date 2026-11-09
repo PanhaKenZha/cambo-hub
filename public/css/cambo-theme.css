@@ -1,0 +1,10 @@
+:root{--ch-blue:#0d47a1;--ch-red:#e53935;--ch-accent:#1976d2;--ch-purple:#7e57c2;--ch-success:#10b981;--ch-warning:#f59e0b;--ch-bg:#f8fafc;--ch-surface:#fff;--ch-text:#122348;--ch-muted:#64748b;--ch-border:#dce5f2;--ch-radius:16px;--ch-shadow:0 12px 40px #0d47a10d;--ch-font:'Poppins','Noto Sans Khmer',system-ui,sans-serif}
+[data-theme=dark]{color-scheme:dark;--ch-bg:#0b1630;--ch-surface:#14233e;--ch-text:#e8effb;--ch-muted:#a9b8d1;--ch-border:#2c4063;--ch-shadow:0 12px 40px #0002}
+.ch-bg-hero{background:var(--ch-bg) url('../images/backgrounds/hero-light.svg') center/cover}
+[data-theme=dark] .ch-bg-hero{background-image:url('../images/backgrounds/hero-dark.svg')}
+.ch-bg-auth{background:var(--ch-bg) url('../images/backgrounds/auth-light.svg') center/cover}
+.ch-bg-dashboard{background:var(--ch-bg) url('../images/backgrounds/dashboard-grid.svg') center/cover}
+[data-theme=dark] .ch-bg-auth,[data-theme=dark] .ch-bg-dashboard{background-image:none}
+.ch-surface{background:var(--ch-surface);color:var(--ch-text);border:1px solid var(--ch-border);border-radius:var(--ch-radius);box-shadow:var(--ch-shadow)}
+.ch-service-image{width:100%;aspect-ratio:1;object-fit:cover;border-radius:var(--ch-radius)}
+.ch-icon{width:24px;height:24px;object-fit:contain;flex-shrink:0}
