@@ -24,7 +24,8 @@ class AppealController extends Controller
         ]);
         $status = $filters['status'] ?? AppealStatus::Pending->value;
 
-        $appeals = ModerationAppeal::query()
+        $baseQuery = ModerationAppeal::visibleTo($request->user());
+        $appeals = (clone $baseQuery)
             ->with(['user', 'decider', 'appealable'])
             ->when($status !== 'all', fn ($query) => $query->where('status', $status))
             ->orderBy('created_at', $status === AppealStatus::Pending->value ? 'asc' : 'desc')
@@ -34,7 +35,7 @@ class AppealController extends Controller
         return view('admin.appeals.index', [
             'appeals' => $appeals,
             'activeStatus' => $status,
-            'statusCounts' => ModerationAppeal::query()->toBase()->selectRaw('status, count(*) as total')->groupBy('status')->pluck('total', 'status'),
+            'statusCounts' => (clone $baseQuery)->toBase()->selectRaw('status, count(*) as total')->groupBy('status')->pluck('total', 'status'),
         ]);
     }
 

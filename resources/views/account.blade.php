@@ -32,6 +32,16 @@
         </form>
     </x-ui.card>
 
+    <x-ui.card as="section" aria-labelledby="standing-heading">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <h2 id="standing-heading" class="text-lg font-semibold">Account standing</h2>
+                <p class="mt-1 text-sm text-ink-muted">See warnings and posts that were not approved, and appeal decisions you disagree with.</p>
+            </div>
+            <x-ui.button :href="route('account.standing')" variant="secondary" size="sm">View account standing</x-ui.button>
+        </div>
+    </x-ui.card>
+
     <x-ui.card as="section" class="border-danger/40" aria-labelledby="delete-heading">
         <h2 id="delete-heading" class="text-lg font-semibold text-danger">Delete account</h2>
         <p class="mt-1 text-sm text-ink-muted">This permanently deletes your account. Enter your password to confirm.</p>

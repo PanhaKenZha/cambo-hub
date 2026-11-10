@@ -43,8 +43,9 @@ class AuthController extends Controller
         if ($user->isSuspended()) {
             Auth::logout();
             $loginRecorder->recordFailure($credentials['email'], 'suspended', $user);
+            AppealController::rememberSuspendedUser($request, $user);
 
-            throw ValidationException::withMessages(['email' => 'This account has been suspended.']);
+            return redirect()->route('account.suspended');
         }
         $request->session()->regenerate();
         $loginRecorder->recordSuccess($user);

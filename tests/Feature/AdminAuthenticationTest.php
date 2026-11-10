@@ -255,7 +255,7 @@ class AdminAuthenticationTest extends TestCase
         $user = User::factory()->suspended()->create(['password' => 'password123']);
 
         $this->post('/login', ['email' => $user->email, 'password' => 'password123'])
-            ->assertSessionHasErrors(['email' => 'This account has been suspended.']);
+            ->assertRedirect('/account/suspended');
         $this->assertGuest();
 
         $this->actingAs($user)->get('/dashboard')->assertRedirect('/login');

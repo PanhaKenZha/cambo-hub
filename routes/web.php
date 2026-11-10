@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AppealController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContentReportController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\LocaleController;
@@ -27,6 +29,10 @@ Route::middleware('module:news')->group(function () {
     Route::post('/news/{slug}/comments', [NewsController::class, 'comment'])->where('slug', '[a-z0-9\-_]+')
         ->middleware(['auth', 'throttle:5,1'])->name('news.comments.store');
 });
+Route::post('/report/{type}/{id}', [ContentReportController::class, 'store'])->whereIn('type', array_keys(ContentReportController::REPORTABLE_TYPES))->whereNumber('id')
+    ->middleware(['auth', 'throttle:10,1'])->name('content.report');
+Route::get('/account/suspended', [AppealController::class, 'suspended'])->name('account.suspended');
+Route::post('/account/suspended/appeal', [AppealController::class, 'storeSuspended'])->middleware('throttle:5,1')->name('account.suspended.appeal');
 Route::view('/contact', 'contact')->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:3,1')->name('contact.store');
 Route::view('/mission', 'about.purpose', ['page' => 'mission'])->name('mission');
@@ -61,5 +67,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::view('/account', 'account')->name('account.edit');
     Route::patch('/account', [AccountController::class, 'update'])->name('account.update');
     Route::put('/account/password', [AccountController::class, 'password'])->middleware('throttle:5,1')->name('account.password');
+    Route::get('/account/standing', [AppealController::class, 'standing'])->name('account.standing');
+    Route::post('/appeals', [AppealController::class, 'store'])->middleware('throttle:5,1')->name('appeals.store');
     Route::delete('/account', [AccountController::class, 'destroy'])->middleware('throttle:5,1')->name('account.destroy');
 });

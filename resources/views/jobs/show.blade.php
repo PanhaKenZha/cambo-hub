@@ -103,6 +103,7 @@
                         @endif
                 @endswitch
             </x-ui.card>
+            <x-report-content type="job" :id="$job->id" class="mt-4 px-1" />
         </aside>
     </div>
 </div>

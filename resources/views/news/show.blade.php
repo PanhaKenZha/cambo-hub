@@ -40,6 +40,10 @@
 
     <div class="cms-prose mt-8">{!! $article->bodyHtml($locale) !!}</div>
 
+    @unless($isPreview)
+        <x-report-content type="news" :id="$article->id" class="mt-8" />
+    @endunless
+
     @if($article->allow_comments && ! $isPreview)
         <section class="mt-12 border-t border-line pt-8" aria-labelledby="comments-heading">
             <h2 id="comments-heading" class="text-xl font-bold text-ink">{{ trans_choice(':count comment|:count comments', $comments->count()) }}</h2>

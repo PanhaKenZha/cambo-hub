@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use App\Enums\AppealStatus;
+use App\Enums\PlatformModule;
 use Database\Factories\ModerationAppealFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,6 +46,20 @@ class ModerationAppeal extends Model
     public function decider(): BelongsTo
     {
         return $this->belongsTo(User::class, 'decided_by');
+    }
+
+    /**
+     * Appeals a moderator may see. Account violations are visible to every moderator;
+     * appeals about rejected submissions only to moderators of that module, as in the Approval center.
+     */
+    #[Scope]
+    protected function visibleTo(Builder $query, User $user): void
+    {
+        $visibleModules = PlatformModule::visibleTo($user);
+
+        $query->where(fn (Builder $query) => $query
+            ->where('appealable_type', (new UserViolation)->getMorphClass())
+            ->orWhereHasMorph('appealable', [ApprovalRequest::class], fn (Builder $query) => $query->whereIn('module', $visibleModules)));
     }
 
     public function isPending(): bool

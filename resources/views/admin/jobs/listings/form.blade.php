@@ -42,6 +42,7 @@
 @elseif($latestReview && $job->status === JobStatus::Rejected)
     <x-ui.alert variant="error" class="mt-4">
         Returned by {{ $latestReview->reviewer?->name ?? 'a reviewer' }}: {{ $latestReview->rejection_reason }}. Update the job and send it again.
+        @include('admin.appeals._rejected-submission', ['review' => $latestReview])
     </x-ui.alert>
 @endif
 @if($isEditing && ! $job->company->is_active)
