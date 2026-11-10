@@ -15,6 +15,10 @@ use App\Http\Controllers\Admin\Cms\MenuItemController;
 use App\Http\Controllers\Admin\Cms\PageController as CmsPageController;
 use App\Http\Controllers\Admin\ContentReportController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\Jobs\ApplicationController as JobsApplicationController;
+use App\Http\Controllers\Admin\Jobs\CategoryController as JobsCategoryController;
+use App\Http\Controllers\Admin\Jobs\CompanyController as JobsCompanyController;
+use App\Http\Controllers\Admin\Jobs\JobController as JobsJobController;
 use App\Http\Controllers\Admin\News\ArticleController as NewsArticleController;
 use App\Http\Controllers\Admin\News\AuthorController as NewsAuthorController;
 use App\Http\Controllers\Admin\News\CategoryController as NewsCategoryController;
@@ -97,6 +101,31 @@ Route::middleware('admin')->group(function () {
             Route::get('/comments', [NewsCommentController::class, 'index'])->name('comments.index');
             Route::post('/comments/bulk', [NewsCommentController::class, 'bulk'])->name('comments.bulk');
             Route::post('/comments/{comment}', [NewsCommentController::class, 'moderate'])->name('comments.moderate');
+        });
+
+    /*
+    | Jobs module. Viewing needs jobs.view; controllers check create / edit / delete,
+    | and publishing, featuring, closing and company verification need jobs.manage.
+    */
+    Route::middleware('can:'.PermissionArea::Jobs->permission(PermissionAction::View))
+        ->prefix('jobs')
+        ->name('jobs.')
+        ->group(function () {
+            Route::resource('listings', JobsJobController::class)->except('show');
+            Route::post('/listings/{listing}/submit', [JobsJobController::class, 'submit'])->name('listings.submit');
+            Route::post('/listings/{listing}/feature', [JobsJobController::class, 'toggleFeatured'])->name('listings.feature');
+            Route::post('/listings/{listing}/close', [JobsJobController::class, 'close'])->name('listings.close');
+
+            Route::resource('companies', JobsCompanyController::class)->except('show');
+            Route::post('/companies/{company}/verify', [JobsCompanyController::class, 'verify'])->name('companies.verify');
+            Route::get('/companies/{company}/document', [JobsCompanyController::class, 'document'])->name('companies.document');
+
+            Route::resource('categories', JobsCategoryController::class)->except('show');
+
+            Route::get('/applications', [JobsApplicationController::class, 'index'])->name('applications.index');
+            Route::get('/applications/{application}', [JobsApplicationController::class, 'show'])->name('applications.show');
+            Route::put('/applications/{application}', [JobsApplicationController::class, 'update'])->name('applications.update');
+            Route::get('/applications/{application}/cv', [JobsApplicationController::class, 'cv'])->name('applications.cv');
         });
 
     Route::middleware('can:'.PermissionArea::WebsiteContent->permission(PermissionAction::View))

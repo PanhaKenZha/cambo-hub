@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('moderation:expire-suspensions')->hourly()->withoutOverlapping();
+Schedule::command('jobs:expire')->hourly()->withoutOverlapping();
