@@ -9,7 +9,6 @@ use Database\Factories\HomepageSectionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * One block on the public homepage, in the order administrators choose.
@@ -36,7 +35,7 @@ class HomepageSection extends Model
         return match (true) {
             blank($this->image_path) => null,
             str_starts_with($this->image_path, 'images/') => asset($this->image_path),
-            default => Storage::disk('public')->url($this->image_path),
+            default => asset('storage/'.$this->image_path),
         };
     }
 

@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * One piece of CMS published content shown on the homepage and in search,
  * e.g. a news article, job, product, property, story, banner, or advert.
  */
-#[Fillable(['content_type', 'title', 'summary', 'image_path', 'link_url', 'badge', 'meta', 'is_featured', 'is_published', 'published_at', 'starts_at', 'ends_at', 'sort_order'])]
+#[Fillable(['content_type', 'title', 'summary', 'image_path', 'link_url', 'badge', 'meta', 'is_featured', 'is_published', 'published_at', 'starts_at', 'ends_at', 'sort_order', 'source_type', 'source_id'])]
 class CmsContent extends Model
 {
     /** @use HasFactory<CmsContentFactory> */

@@ -9,7 +9,6 @@ use Database\Factories\BannerFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * An image banner shown in one placement during an optional date range.
@@ -35,7 +34,7 @@ class Banner extends Model
         return match (true) {
             blank($this->image_path) => null,
             str_starts_with($this->image_path, 'images/') => asset($this->image_path),
-            default => Storage::disk('public')->url($this->image_path),
+            default => asset('storage/'.$this->image_path),
         };
     }
 

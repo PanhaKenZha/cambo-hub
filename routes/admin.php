@@ -15,6 +15,10 @@ use App\Http\Controllers\Admin\Cms\MenuItemController;
 use App\Http\Controllers\Admin\Cms\PageController as CmsPageController;
 use App\Http\Controllers\Admin\ContentReportController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\News\ArticleController as NewsArticleController;
+use App\Http\Controllers\Admin\News\AuthorController as NewsAuthorController;
+use App\Http\Controllers\Admin\News\CategoryController as NewsCategoryController;
+use App\Http\Controllers\Admin\News\CommentController as NewsCommentController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TwoFactorChallengeController;
@@ -74,6 +78,27 @@ Route::middleware('admin')->group(function () {
     | Website content (CMS). Viewing needs cms.view; controllers check create / edit / delete,
     | and publishing pages needs cms.manage.
     */
+    /*
+    | News module. Viewing needs news.view; controllers check create / edit / delete,
+    | and publishing, featuring and comment moderation need news.manage.
+    */
+    Route::middleware('can:'.PermissionArea::News->permission(PermissionAction::View))
+        ->prefix('news')
+        ->name('news.')
+        ->group(function () {
+            Route::resource('articles', NewsArticleController::class)->except('show');
+            Route::get('/articles/{article}/preview', [NewsArticleController::class, 'preview'])->name('articles.preview');
+            Route::post('/articles/{article}/submit', [NewsArticleController::class, 'submit'])->name('articles.submit');
+            Route::post('/articles/{article}/feature', [NewsArticleController::class, 'toggleFeatured'])->name('articles.feature');
+
+            Route::resource('categories', NewsCategoryController::class)->except('show');
+            Route::resource('authors', NewsAuthorController::class)->except('show');
+
+            Route::get('/comments', [NewsCommentController::class, 'index'])->name('comments.index');
+            Route::post('/comments/bulk', [NewsCommentController::class, 'bulk'])->name('comments.bulk');
+            Route::post('/comments/{comment}', [NewsCommentController::class, 'moderate'])->name('comments.moderate');
+        });
+
     Route::middleware('can:'.PermissionArea::WebsiteContent->permission(PermissionAction::View))
         ->prefix('cms')
         ->name('cms.')

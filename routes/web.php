@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\SearchController;
@@ -15,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', HomeController::class)->name('home');
 Route::get('/search', SearchController::class)->middleware('throttle:60,1')->name('search');
 Route::get('/pages/{slug}', PageController::class)->where('slug', '[a-z0-9\-_]+')->name('pages.show');
+Route::middleware('module:news')->group(function () {
+    Route::get('/news/{slug}', [NewsController::class, 'show'])->where('slug', '[a-z0-9\-_]+')->name('news.show');
+    Route::post('/news/{slug}/comments', [NewsController::class, 'comment'])->where('slug', '[a-z0-9\-_]+')
+        ->middleware(['auth', 'throttle:5,1'])->name('news.comments.store');
+});
 Route::view('/contact', 'contact')->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:3,1')->name('contact.store');
 Route::view('/mission', 'about.purpose', ['page' => 'mission'])->name('mission');

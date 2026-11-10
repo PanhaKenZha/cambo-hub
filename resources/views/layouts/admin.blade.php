@@ -20,6 +20,11 @@
         ['label' => 'Footer', 'route' => 'admin.settings.edit', 'params' => ['group' => 'footer'], 'permission' => PermissionArea::Settings->permission(PermissionAction::View),
             'isActive' => request()->route('group') === 'footer',
             'icon' => 'M3.75 6A2.25 2.25 0 016 3.75h12A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6zM3.75 15.75h16.5'],
+        ['heading' => 'Services'],
+        ['label' => 'News', 'route' => 'admin.news.articles.index', 'active' => 'admin.news.*', 'permission' => PermissionArea::News->permission(PermissionAction::View),
+            'badge' => fn () => \App\Models\NewsComment::where('status', \App\Enums\CommentStatus::Pending)->count()
+                + \App\Models\NewsArticle::where('status', \App\Enums\ArticleStatus::InReview)->count(),
+            'icon' => 'M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z'],
         ['heading' => 'Moderation'],
         ['label' => 'Approvals', 'route' => 'admin.approvals.index', 'active' => 'admin.approvals.*', 'permission' => PermissionArea::Approvals->permission(PermissionAction::View),
             'badge' => fn () => \App\Models\ApprovalRequest::pending()->whereIn('module', \App\Enums\PlatformModule::visibleTo($currentAdmin))->count(),
