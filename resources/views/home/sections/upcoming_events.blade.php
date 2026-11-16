@@ -1,9 +1,9 @@
 <x-home-section :section="$section">
-    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <ul class="home-event-list grid gap-4 sm:grid-cols-2">
         @foreach($items as $item)
             @php($eventDate = $item->detail('date') ? \Illuminate\Support\Carbon::parse($item->detail('date')) : null)
             <li>
-                <x-ui.card as="article" padding="p-0" interactive class="flex h-full flex-col overflow-hidden">
+                <x-ui.card as="article" padding="p-0" interactive class="home-event-card flex h-full flex-col overflow-hidden">
                     <div class="skeleton relative aspect-[16/10]">
                         <img src="{{ $item->imageUrl('images/backgrounds/events.webp') }}" width="320" height="200" alt="" loading="lazy" data-placeholder class="size-full object-cover">
                         @if($eventDate)

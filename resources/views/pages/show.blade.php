@@ -8,7 +8,7 @@
             Preview{{ isset($page) ? ' · '.$page->stateLabel() : '' }} — visitors {{ isset($page) && $page->isLive() ? 'can' : 'cannot yet' }} see this page.
         </x-ui.alert>
     @endif
-    <x-ui.card as="article" class="animate-reveal">
+    <x-ui.card as="article" class="document-page animate-reveal">
         <h1 class="text-3xl leading-tight font-bold tracking-tight sm:text-4xl">{{ $title }}</h1>
         <div class="cms-prose mt-6">{!! $html !!}</div>
     </x-ui.card>

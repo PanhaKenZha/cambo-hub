@@ -7,7 +7,7 @@
     $recentSignIns = $user->loginHistories()->latest()->limit(5)->get();
 @endphp
 @section('page')
-<div class="space-y-8">
+<div class="dashboard-content space-y-8">
     <x-ui.card as="section" class="overflow-hidden bg-gradient-to-br from-brand-700 to-brand-900 text-white" aria-labelledby="dashboard-title">
         <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-4">

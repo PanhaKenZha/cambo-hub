@@ -4,7 +4,7 @@
 @section('description', __($purpose['intro']))
 @section('content')
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <section class="grid items-center gap-12 py-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:py-20">
+    <section class="purpose-hero grid items-center gap-12 py-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:py-20">
         <div class="animate-reveal">
             <x-ui.eyebrow>{{ __($purpose['eyebrow']) }}</x-ui.eyebrow>
             <nav class="mt-5 inline-flex rounded-xl border border-line bg-surface-muted p-1" aria-label="{{ __('About Cambo Hub') }}">

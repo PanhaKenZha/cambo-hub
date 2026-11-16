@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('title', 'Account settings')
 @section('page')
-<div class="space-y-6">
-    <div>
+<div class="account-settings space-y-6">
+    <div class="content-banner">
         <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"><span aria-hidden="true">←</span> Dashboard</a>
         <h1 class="mt-3 text-3xl font-bold tracking-tight">Account settings</h1>
     </div>

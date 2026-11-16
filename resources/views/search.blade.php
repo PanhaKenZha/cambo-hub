@@ -3,7 +3,7 @@
 @section('description', __('Search news, jobs, products, businesses, property, events, and community posts on Cambo Hub.'))
 @section('content')
 <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-    <header class="max-w-3xl">
+    <header class="content-banner search-banner">
         <x-ui.eyebrow>{{ __('GLOBAL SEARCH') }}</x-ui.eyebrow>
         <h1 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{{ __('Search Cambo Hub') }}</h1>
         <form action="{{ route('search') }}" method="get" role="search" data-loading data-loading-target="search-loading" data-loading-hide="search-results"
