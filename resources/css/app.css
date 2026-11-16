@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@import './public.css';
+@import './nature.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -53,6 +55,11 @@
 
     --animate-reveal: reveal 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
     --animate-shimmer: shimmer 1.6s linear infinite;
+    --animate-aurora: aurora 18s ease-in-out infinite alternate;
+    --animate-float: float 6s ease-in-out infinite;
+    --animate-spin-slow: spin 14s linear infinite;
+    --animate-gradient-pan: gradient-pan 6s ease-in-out infinite alternate;
+    --animate-ping-soft: ping-soft 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 
     @keyframes reveal {
         from { opacity: 0; transform: translateY(10px); }
@@ -62,6 +69,31 @@
     @keyframes shimmer {
         to { background-position: -200% 0; }
     }
+
+    @keyframes aurora {
+        0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+        50% { transform: translate3d(6%, -8%, 0) scale(1.15) rotate(20deg); }
+        100% { transform: translate3d(-6%, 6%, 0) scale(0.95) rotate(-12deg); }
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    @keyframes gradient-pan {
+        from { background-position: 0% 50%; }
+        to { background-position: 100% 50%; }
+    }
+
+    @keyframes ping-soft {
+        75%, 100% { transform: scale(2.2); opacity: 0; }
+    }
+}
+
+/* Smooth cross-fade between pages in browsers that support view transitions. */
+@view-transition {
+    navigation: auto;
 }
 
 @layer base {
@@ -172,6 +204,51 @@
 /* Break Japanese headings between phrases rather than mid-word. */
 :lang(ja) :is(h1, h2, h3) {
     word-break: auto-phrase;
+}
+
+/*
+ * Scroll reveal. The "js" class is added in the document head, so without
+ * JavaScript (or with reduced motion) everything is simply visible.
+ */
+@media (prefers-reduced-motion: no-preference) {
+    .js [data-reveal] {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+    }
+
+    .js [data-reveal].is-visible {
+        opacity: 1;
+        transform: none;
+    }
+
+    .js [data-reveal-stagger] li {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+        transition: opacity 0.55s cubic-bezier(0.2, 0.7, 0.3, 1), transform 0.55s cubic-bezier(0.2, 0.7, 0.3, 1);
+        transition-delay: calc(var(--stagger-index, 0) * 70ms);
+    }
+
+    .js [data-reveal-stagger].is-visible li {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Floating header: tightens and gains a shadow once the page has scrolled. */
+[data-site-header][data-scrolled] {
+    padding-top: 0.375rem;
+}
+
+[data-site-header][data-scrolled] > [data-header-bar] {
+    box-shadow: var(--shadow-card-hover);
+}
+
+/* Reading progress in the colours of the Cambodian flag: blue, red, blue. */
+[data-scroll-progress] {
+    transform: scaleX(var(--scroll-progress, 0));
+    transform-origin: left;
+    background-image: linear-gradient(90deg, var(--color-brand-700) 0 25%, var(--color-cambo-red) 25% 75%, var(--color-brand-700) 75%);
 }
 
 /* Blue SVG icons from /images/icons stay legible on dark surfaces. */
@@ -350,6 +427,63 @@
 
     & hr {
         border-color: var(--color-line);
+    }
+}
+
+/*
+ * Lotus lattice inspired by Khmer textile (hol) patterns. Painted with
+ * currentColor through a mask, so it follows the theme: e.g. "pattern-khmer text-primary/10".
+ */
+@utility pattern-khmer {
+    background-color: currentColor;
+    /* Two layers: the repeating lattice, intersected with a radial fade so the edges melt into the page. */
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='black' stroke-width='1.2'%3E%3Cpath d='M28 3 53 28 28 53 3 28Z'/%3E%3Cpath d='M28 15c4 5 4 8 0 13-4-5-4-8 0-13Zm0 26c4-5 4-8 0-13-4 5-4 8 0 13ZM15 28c5-4 8-4 13 0-5 4-8 4-13 0Zm26 0c-5-4-8-4-13 0 5 4 8 4 13 0Z'/%3E%3C/g%3E%3Ccircle cx='28' cy='28' r='1.8'/%3E%3Ccircle cx='0' cy='0' r='1.8'/%3E%3Ccircle cx='56' cy='0' r='1.8'/%3E%3Ccircle cx='0' cy='56' r='1.8'/%3E%3Ccircle cx='56' cy='56' r='1.8'/%3E%3C/svg%3E"), radial-gradient(ellipse at center, black 25%, transparent 75%);
+    mask-size: 56px 56px, 100% 100%;
+    mask-repeat: repeat, no-repeat;
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+}
+
+@utility mask-fade-x {
+    mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+}
+
+/* Slowly panning brand gradient for highlighted headline words. */
+@utility text-gradient-brand {
+    background-image: linear-gradient(100deg, var(--color-brand-700), var(--color-brand-500) 35%, var(--color-cambo-red) 65%, var(--color-brand-600));
+    background-size: 220% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: var(--animate-gradient-pan);
+
+    @variant dark {
+        background-image: linear-gradient(100deg, var(--color-brand-300), #c8dcff 35%, #ff8a85 65%, var(--color-brand-300));
+    }
+}
+
+/* Frosted glass panel. */
+@utility glass {
+    background-color: color-mix(in oklab, var(--color-surface) 72%, transparent);
+    backdrop-filter: blur(18px) saturate(1.6);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+}
+
+/* A soft glow that follows the pointer (position set by app.js as --spot-x / --spot-y). */
+@utility spotlight {
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        background: radial-gradient(420px circle at var(--spot-x, 50%) var(--spot-y, 50%), color-mix(in oklab, var(--color-brand-500) 12%, transparent), transparent 45%);
+    }
+
+    &:hover::before {
+        opacity: 1;
     }
 }
 

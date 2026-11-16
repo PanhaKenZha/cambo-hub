@@ -4,6 +4,8 @@
  * loading feedback on form submission.
  */
 
+import { initNatureScenes } from './nature-scenes';
+
 const THEME_KEY = 'theme';
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -211,8 +213,128 @@ function focusFirstError() {
     }
 }
 
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+/*
+ * Elements marked data-reveal fade up when they scroll into view. Inside
+ * data-reveal-stagger, list items follow one after another.
+ */
+function initScrollReveal() {
+    const targets = document.querySelectorAll('[data-reveal], [data-reveal-stagger]');
+    if (!targets.length) {
+        return;
+    }
+
+    targets.forEach((target) => {
+        if (target.hasAttribute('data-reveal-stagger')) {
+            target.querySelectorAll('li').forEach((item, index) => item.style.setProperty('--stagger-index', String(Math.min(index, 10))));
+        }
+    });
+
+    if (reducedMotion.matches || !('IntersectionObserver' in window)) {
+        targets.forEach((target) => target.classList.add('is-visible'));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+
+    targets.forEach((target) => observer.observe(target));
+}
+
+/* Numbers marked data-count-to count up from zero the first time they are seen. */
+function initCountUp() {
+    const counters = document.querySelectorAll('[data-count-to]');
+    if (!counters.length || reducedMotion.matches || !('IntersectionObserver' in window)) {
+        return;
+    }
+
+    const format = new Intl.NumberFormat(document.documentElement.lang || undefined);
+    const run = (element) => {
+        const target = Number(element.dataset.countTo);
+        const start = performance.now();
+        const duration = 1400;
+        const tick = (now) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            element.textContent = format.format(Math.round(target * eased));
+            if (progress < 1) {
+                requestAnimationFrame(tick);
+            }
+        };
+        requestAnimationFrame(tick);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                run(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    counters.forEach((counter) => observer.observe(counter));
+}
+
+/* Floating header state and the reading-progress bar. */
+function initScrollHeader() {
+    const header = document.querySelector('[data-site-header]');
+    const progress = document.querySelector('[data-scroll-progress]');
+    if (!header && !progress) {
+        return;
+    }
+
+    let queued = false;
+    const update = () => {
+        queued = false;
+        const scrolled = window.scrollY;
+        header?.toggleAttribute('data-scrolled', scrolled > 12);
+        if (progress) {
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            progress.style.setProperty('--scroll-progress', max > 0 ? String(Math.min(scrolled / max, 1)) : '0');
+        }
+    };
+
+    window.addEventListener('scroll', () => {
+        if (!queued) {
+            queued = true;
+            requestAnimationFrame(update);
+        }
+    }, { passive: true });
+    update();
+}
+
+/* Cards with the spotlight utility get a glow that follows the pointer. */
+function initSpotlight() {
+    if (reducedMotion.matches || !window.matchMedia('(hover: hover)').matches) {
+        return;
+    }
+
+    document.addEventListener('pointermove', (event) => {
+        const card = event.target instanceof Element ? event.target.closest('.spotlight') : null;
+        if (!card) {
+            return;
+        }
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--spot-x', `${event.clientX - rect.left}px`);
+        card.style.setProperty('--spot-y', `${event.clientY - rect.top}px`);
+    }, { passive: true });
+}
+
 initThemeToggle();
 initDisclosures();
+initScrollReveal();
+initCountUp();
+initScrollHeader();
+initSpotlight();
+initNatureScenes();
 initLoadingForms();
 initMediaPlaceholders();
 initAnnouncements();
