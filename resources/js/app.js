@@ -5,6 +5,7 @@
  */
 
 import { initNatureScenes } from './nature-scenes';
+import { initIslandStory } from './island-story';
 
 const THEME_KEY = 'theme';
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -335,6 +336,7 @@ initCountUp();
 initScrollHeader();
 initSpotlight();
 initNatureScenes();
+initIslandStory();
 initLoadingForms();
 initMediaPlaceholders();
 initAnnouncements();
