@@ -1,5 +1,5 @@
 /*
- * Floating-island scroll story (resources/views/components/home-island-story.blade.php).
+ * Floating-island scroll story (resources/views/components/purpose-story.blade.php).
  *
  * The fly-in clip has very few keyframes, so it is never seeked live. It plays once (muted, offscreen)
  * while every frame is cached as a JPEG blob; the canvas then draws the cached frame that matches the
@@ -145,10 +145,10 @@ export function initIslandStory() {
     const L3 = q('[data-isl-l3]');
     const L4 = q('[data-isl-l4]');
     const heroCopy = q('[data-isl-hero]');
-    const heroTitle = heroCopy.querySelector('h2');
+    const heroTitle = heroCopy.querySelector('h1, h2');
     const heroLine = heroCopy.querySelector('.isl-line');
     const hud = q('[data-isl-hud]');
-    const fadeOut = [q('[data-isl-caption]'), q('[data-isl-hint]')];
+    const fadeOut = qa('[data-isl-fadeout]');
     const fog = q('[data-isl-fog]');
     const rocks = qa('[data-isl-rock]').map((el) => ({ el, x: +el.dataset.x, y: +el.dataset.y, d: +el.dataset.depth }));
     const vWords = qa('[data-isl-vword]');
@@ -201,18 +201,13 @@ export function initIslandStory() {
         spot.classList.toggle('on', on);
     }));
 
-    /* Services cards tilt toward the pointer. */
-    if (!reduced.matches) {
-        qa('[data-isl-tilt]').forEach((tile) => {
-            tile.addEventListener('pointermove', (event) => {
-                const b = tile.getBoundingClientRect();
-                const x = (event.clientX - b.left) / b.width - 0.5;
-                const y = (event.clientY - b.top) / b.height - 0.5;
-                tile.style.transform = `perspective(1000px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
-            });
-            tile.addEventListener('pointerleave', () => { tile.style.transform = ''; });
-        });
-    }
+    /* The stage slides under the sticky site header, so it needs the header's height. */
+    const header = document.querySelector('[data-site-header]');
+    const measureHeader = () => {
+        document.documentElement.style.setProperty('--header-offset', `${header?.offsetHeight ?? 0}px`);
+    };
+    measureHeader();
+    root.setAttribute('data-ready', '');
 
     let sp = 0, sx = 0, sy = 0, mx = 0, my = 0, last = performance.now(), running = false;
     window.addEventListener('pointermove', (event) => {
@@ -375,6 +370,7 @@ export function initIslandStory() {
     reveal.observe(story);
 
     const relayout = () => {
+        measureHeader();
         cache.resize();
         layoutHero();
     };
