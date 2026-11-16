@@ -1,5 +1,6 @@
 @extends('layouts.app')
-@section('auth-art', asset('images/content/user-profile.webp'))
+@section('auth-art', asset('images/genomines/nickel-crystals.webp'))
+@section('auth-art-alt', __('Turquoise mineral crystals in the light'))
 @section('title', 'Sign in')
 @section('page')
 <x-ui.card as="section" aria-labelledby="login-title">
