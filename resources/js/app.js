@@ -6,6 +6,7 @@
 
 import { initNatureScenes } from './nature-scenes';
 import { initIslandStory } from './island-story';
+import { initPeopleRing } from './people-ring';
 
 const THEME_KEY = 'theme';
 const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -337,6 +338,7 @@ initScrollHeader();
 initSpotlight();
 initNatureScenes();
 initIslandStory();
+initPeopleRing();
 initLoadingForms();
 initMediaPlaceholders();
 initAnnouncements();

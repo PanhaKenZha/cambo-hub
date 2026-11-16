@@ -2,6 +2,7 @@
 @import './public.css';
 @import './nature.css';
 @import './island-story.css';
+@import './people-ring.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
