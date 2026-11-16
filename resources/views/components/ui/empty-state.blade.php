@@ -1,5 +1,5 @@
 @props(['title', 'description' => null, 'image' => null, 'icon' => null])
-<div {{ $attributes->class(['flex flex-col items-center rounded-2xl border border-dashed border-line-strong bg-surface px-6 py-12 text-center']) }}>
+<div {{ $attributes->class(['empty-state flex flex-col items-center rounded-2xl border border-dashed border-line-strong bg-surface px-6 py-12 text-center']) }}>
     @if($image)
         <img src="{{ asset($image) }}" width="180" height="180" alt="" loading="lazy" class="mb-4 size-36 object-contain sm:size-44 dark:opacity-90">
     @elseif($icon)

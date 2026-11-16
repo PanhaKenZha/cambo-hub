@@ -60,8 +60,8 @@ class ContentItemSeeder extends Seeder
 
         return [
             CmsContentType::ServiceCategory->value => [
-                ['title' => 'News', 'summary' => 'Local and world headlines', 'link_url' => $search(CmsContentType::News), 'meta' => ['icon' => 'news', 'module' => 'news']],
-                ['title' => 'Jobs', 'summary' => 'Find your next role', 'link_url' => $search(CmsContentType::Job), 'meta' => ['icon' => 'jobs', 'module' => 'jobs']],
+                ['title' => 'News', 'summary' => 'Local and world headlines', 'link_url' => '/news', 'meta' => ['icon' => 'news', 'module' => 'news']],
+                ['title' => 'Jobs', 'summary' => 'Find your next role', 'link_url' => '/jobs', 'meta' => ['icon' => 'jobs', 'module' => 'jobs']],
                 ['title' => 'Marketplace', 'summary' => 'Shop local sellers', 'link_url' => $search(CmsContentType::Product), 'meta' => ['icon' => 'shopping', 'module' => 'marketplace']],
                 ['title' => 'Businesses', 'summary' => 'Discover trusted companies', 'link_url' => $search(CmsContentType::Business), 'meta' => ['icon' => 'business', 'module' => 'business']],
                 ['title' => 'Property', 'summary' => 'Homes and spaces', 'link_url' => $search(CmsContentType::Property), 'meta' => ['icon' => 'property', 'module' => 'listings']],

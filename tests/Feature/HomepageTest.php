@@ -21,6 +21,29 @@ class HomepageTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_hero_animation_includes_every_available_frame_in_order(): void
+    {
+        $this->seed(CmsSeeder::class);
+
+        $response = $this->get('/')->assertOk()
+            ->assertSee('data-frame-sequence', false)
+            ->assertSee('data-frame-image', false);
+        $this->assertSame(1, preg_match('/data-frames="([^"]+)"/', $response->getContent(), $matches));
+
+        $frames = json_decode(html_entity_decode($matches[1], ENT_QUOTES), true, flags: JSON_THROW_ON_ERROR);
+        $availableFiles = glob(public_path('frame_*.webp')) ?: [];
+
+        $this->assertNotEmpty($availableFiles);
+        $this->assertCount(count($availableFiles), $frames);
+        foreach ($availableFiles as $file) {
+            $this->assertContains(asset(basename($file)), $frames);
+        }
+
+        $orderedFrames = $frames;
+        natsort($orderedFrames);
+        $this->assertSame(array_values($orderedFrames), $frames);
+    }
+
     public function test_homepage_renders_every_section_managed_in_the_cms(): void
     {
         $this->seed([CmsSeeder::class, ContentItemSeeder::class]);

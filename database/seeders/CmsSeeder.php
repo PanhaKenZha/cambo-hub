@@ -73,8 +73,8 @@ class CmsSeeder extends Seeder
             [HomepageSectionType::ServiceCategories, ['en' => 'Explore our services', 'km' => 'ស្វែងយល់ពីសេវាកម្មរបស់យើង'], ['en' => 'Every Cambo Hub service, one tap away.', 'km' => null], ['item_count' => 12]],
             [HomepageSectionType::Stories, ['en' => 'Stories', 'km' => 'រឿងរ៉ាវ'], null, ['item_count' => 10]],
             [HomepageSectionType::PromotionalBanners, ['en' => 'Promotions', 'km' => 'ការផ្សព្វផ្សាយ'], null, ['item_count' => 2]],
-            [HomepageSectionType::FeaturedNews, ['en' => 'Latest news', 'km' => 'ព័ត៌មានថ្មីៗ'], ['en' => 'Headlines from across Cambodia.', 'km' => null], ['item_count' => 4, 'button_label' => ['en' => 'All news', 'km' => null], 'link_url' => '/search?type=news']],
-            [HomepageSectionType::LatestJobs, ['en' => 'Featured jobs', 'km' => 'ការងារពិសេស'], ['en' => 'Opportunities from trusted Cambodian employers.', 'km' => null], ['button_label' => ['en' => 'All jobs', 'km' => null], 'link_url' => '/search?type=job']],
+            [HomepageSectionType::FeaturedNews, ['en' => 'Latest news', 'km' => 'ព័ត៌មានថ្មីៗ'], ['en' => 'Headlines from across Cambodia.', 'km' => null], ['item_count' => 4, 'button_label' => ['en' => 'All news', 'km' => null], 'link_url' => '/news']],
+            [HomepageSectionType::LatestJobs, ['en' => 'Featured jobs', 'km' => 'ការងារពិសេស'], ['en' => 'Opportunities from trusted Cambodian employers.', 'km' => null], ['button_label' => ['en' => 'All jobs', 'km' => null], 'link_url' => '/jobs']],
             [HomepageSectionType::MarketplaceHighlights, ['en' => 'Popular products', 'km' => 'ផលិតផលពេញនិយម'], ['en' => 'What people across Cambodia are buying this week.', 'km' => null], ['item_count' => 8, 'button_label' => ['en' => 'All products', 'km' => null], 'link_url' => '/search?type=product']],
             [HomepageSectionType::Advertisements, ['en' => 'Advertisements', 'km' => 'ការផ្សាយពាណិជ្ជកម្ម'], null, ['item_count' => 2]],
             [HomepageSectionType::FeaturedBusinesses, ['en' => 'Business listings', 'km' => 'បញ្ជីអាជីវកម្ម'], ['en' => 'Discover trusted shops, services, and companies near you.', 'km' => null], ['button_label' => ['en' => 'All businesses', 'km' => null], 'link_url' => '/search?type=business']],
@@ -104,11 +104,11 @@ class CmsSeeder extends Seeder
     private function seedMenus(array $pages): void
     {
         if (! MenuItem::where('location', MenuLocation::Header)->exists()) {
-            // Module pages are not built yet, so service links open search filtered to that service.
+            // Services without their own pages yet open search filtered to that service.
             $headerLinks = [
                 [['en' => 'Home', 'km' => 'ទំព័រដើម'], '/'],
-                [['en' => 'News', 'km' => 'ព័ត៌មាន'], '/search?type=news'],
-                [['en' => 'Jobs', 'km' => 'ការងារ'], '/search?type=job'],
+                [['en' => 'News', 'km' => 'ព័ត៌មាន'], '/news'],
+                [['en' => 'Jobs', 'km' => 'ការងារ'], '/jobs'],
                 [['en' => 'Marketplace', 'km' => 'ទីផ្សារ'], '/search?type=product'],
                 [['en' => 'Businesses', 'km' => 'អាជីវកម្ម'], '/search?type=business'],
                 [['en' => 'Events', 'km' => 'ព្រឹត្តិការណ៍'], '/search?type=event'],

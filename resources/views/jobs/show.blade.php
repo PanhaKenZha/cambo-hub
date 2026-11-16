@@ -8,27 +8,43 @@
 @section('title', $title.' · '.$company->name)
 @section('description', Str::limit(strip_tags($job->descriptionHtml($locale)), 160))
 @section('content')
-<div class="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-    <header class="animate-reveal flex flex-col gap-5 sm:flex-row sm:items-start">
+<div class="job-detail-masthead public-page-hero border-b border-line bg-gradient-to-br from-primary-soft via-canvas to-canvas">
+<div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+    <nav aria-label="{{ __('Breadcrumb') }}" class="text-xs text-ink-subtle">
+        <a href="{{ route('home') }}" class="hover:text-primary">{{ __('Home') }}</a> <span aria-hidden="true" class="mx-1">/</span>
+        <a href="{{ route('jobs.index') }}" class="hover:text-primary">{{ __('Jobs') }}</a>
+        @if($job->category)
+            <span aria-hidden="true" class="mx-1">/</span> <a href="{{ route('jobs.index', ['category' => $job->category->slug]) }}" class="hover:text-primary">{{ $job->category->translate('name', $locale) }}</a>
+        @endif
+    </nav>
+    <header class="animate-reveal mt-6 flex flex-col gap-5 sm:flex-row sm:items-start">
         @if($company->logoUrl())
-            <img src="{{ $company->logoUrl() }}" alt="" class="size-16 shrink-0 rounded-2xl object-cover ring-1 ring-line">
+            <img src="{{ $company->logoUrl() }}" alt="" class="size-20 shrink-0 rounded-2xl bg-surface object-cover shadow-card ring-1 ring-line">
         @else
-            <span class="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-2xl font-bold text-primary">{{ Str::upper(Str::substr($company->name, 0, 1)) }}</span>
+            <span class="flex size-20 shrink-0 items-center justify-center rounded-2xl bg-surface text-3xl font-bold text-primary shadow-card ring-1 ring-line">{{ Str::upper(Str::substr($company->name, 0, 1)) }}</span>
         @endif
         <div class="min-w-0">
             <div class="flex flex-wrap gap-2">
                 @if($job->category)<x-ui.badge>{{ $job->category->translate('name', $locale) }}</x-ui.badge>@endif
-                @if($job->isFeaturedNow())<x-ui.badge variant="warning">{{ __('Featured') }}</x-ui.badge>@endif
+                @if($job->isFeaturedNow())<x-ui.badge variant="accent">{{ __('Featured') }}</x-ui.badge>@endif
+                @if($job->is_remote)<x-ui.badge variant="success">{{ __('Remote') }}</x-ui.badge>@endif
             </div>
             <h1 class="mt-2 text-3xl leading-tight font-bold tracking-tight text-ink sm:text-4xl">{{ $title }}</h1>
-            <p class="mt-2 text-lg text-ink-muted">
+            <p class="mt-2 flex flex-wrap items-center gap-x-2 text-lg text-ink-muted">
                 {{ $company->name }}
-                @if($company->isVerified())<span class="text-success" title="{{ __('Verified company') }}">✓ <span class="text-sm">{{ __('Verified') }}</span></span>@endif
+                @if($company->isVerified())<span class="inline-flex items-center gap-1 text-sm font-medium text-success"><svg class="size-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.403 12.652a3 3 0 0 0 0-5.304 3 3 0 0 0-3.75-3.751 3 3 0 0 0-5.305 0 3 3 0 0 0-3.751 3.75 3 3 0 0 0 0 5.305 3 3 0 0 0 3.75 3.751 3 3 0 0 0 5.305 0 3 3 0 0 0 3.751-3.75Zm-2.546-4.46a.75.75 0 0 0-1.214-.883l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>{{ __('Verified company') }}</span>@endif
+            </p>
+            <p class="mt-2 text-xs text-ink-subtle">
+                @php($postedAt = $job->published_at ?? $job->created_at)
+                <time datetime="{{ $postedAt->toIso8601String() }}">{{ __('Posted :date', ['date' => $postedAt->diffForHumans()]) }}</time>
+                <span aria-hidden="true" class="mx-1">·</span>{{ trans_choice(':count view|:count views', $job->views_count, ['count' => number_format($job->views_count)]) }}
             </p>
         </div>
     </header>
-
-    <div class="mt-10 grid gap-8 lg:grid-cols-[1fr_20rem]">
+</div>
+</div>
+<div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+    <div class="grid gap-8 lg:grid-cols-[1fr_22rem]">
         <div class="min-w-0">
             <dl class="grid grid-cols-2 gap-4 rounded-2xl bg-surface p-5 shadow-card ring-1 ring-line sm:grid-cols-4">
                 <div><dt class="text-xs text-ink-subtle">{{ __('Salary') }}</dt><dd class="mt-1 text-sm font-semibold text-ink">{{ $job->salaryLabel() }}</dd></div>
@@ -37,7 +53,7 @@
                 <div><dt class="text-xs text-ink-subtle">{{ __('Apply before') }}</dt><dd class="mt-1 text-sm font-semibold text-ink">{{ $job->closes_at?->translatedFormat('j M Y') ?? __('Open') }}</dd></div>
             </dl>
 
-            <div class="cms-prose mt-8">{!! $job->descriptionHtml($locale) !!}</div>
+            <div class="reading-surface cms-prose mt-8">{!! $job->descriptionHtml($locale) !!}</div>
 
             @if(filled($company->translate('description', $locale)))
                 <section class="mt-10 border-t border-line pt-8">
@@ -106,5 +122,19 @@
             <x-report-content type="job" :id="$job->id" class="mt-4 px-1" />
         </aside>
     </div>
+
+    @if($similarJobs->isNotEmpty())
+        <section class="mt-14 border-t border-line pt-10" aria-labelledby="similar-jobs-heading">
+            <div class="mb-6 flex items-end justify-between gap-4">
+                <h2 id="similar-jobs-heading" class="text-2xl font-bold tracking-tight">{{ __('Similar jobs') }}</h2>
+                <a href="{{ route('jobs.index', array_filter(['category' => $job->category?->slug])) }}" class="group inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-primary">{{ __('View all') }} <span aria-hidden="true" class="transition group-hover:translate-x-0.5">→</span></a>
+            </div>
+            <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                @foreach($similarJobs as $similarJob)
+                    <li><x-job-card :job="$similarJob" :locale="$locale" /></li>
+                @endforeach
+            </ul>
+        </section>
+    @endif
 </div>
 @endsection

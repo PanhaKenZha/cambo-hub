@@ -3,17 +3,19 @@
 @section('description', __('Get in touch with Cambo Hub for account help, business inquiries, feedback, and general questions.'))
 @section('content')
 <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-    <header class="max-w-2xl animate-reveal">
-        <x-ui.eyebrow>{{ __('LET’S START A CONVERSATION') }}</x-ui.eyebrow>
-        <h1 class="mt-4 text-4xl leading-tight font-bold tracking-tight sm:text-5xl">{{ __('Good connections') }}<br><span class="text-primary">{{ __('start with hello.') }}</span></h1>
-        <p class="mt-4 text-base text-ink-muted">{{ __('Have a question, an idea, or something to share? We’d like to hear from you.') }}</p>
+    <header class="contact-masthead content-banner animate-reveal grid items-center gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+        <div>
+            <x-ui.eyebrow>{{ __('LET’S START A CONVERSATION') }}</x-ui.eyebrow>
+            <h1 class="mt-4 text-4xl leading-tight font-bold tracking-tight sm:text-5xl">{{ __('Good connections') }}<br><span class="text-primary">{{ __('start with hello.') }}</span></h1>
+            <p class="mt-4 text-base text-ink-muted">{{ __('Have a question, an idea, or something to share? We’d like to hear from you.') }}</p>
+        </div>
+        <figure class="skeleton overflow-hidden rounded-2xl bg-primary-soft">
+            <img src="{{ asset('images/genomines/seedlings-closeup.webp') }}" width="960" height="537" alt="{{ __('Fresh green seedlings growing toward the light') }}" fetchpriority="high" data-placeholder class="aspect-[16/10] w-full object-cover">
+        </figure>
     </header>
 
-    <div class="mt-10 grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+    <div class="contact-layout mt-10 grid items-start gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
         <aside class="space-y-6">
-            <figure class="skeleton overflow-hidden rounded-3xl bg-primary-soft">
-                <img src="{{ asset('images/backgrounds/customer-support.webp') }}" width="387" height="386" alt="{{ __('Headphones and conversation symbols representing customer support') }}" fetchpriority="high" data-placeholder class="aspect-[16/10] w-full object-cover lg:aspect-[4/3]">
-            </figure>
             <h2 class="text-xl font-semibold">{{ __('How can we help?') }}</h2>
             <ul class="space-y-3">
                 @foreach([

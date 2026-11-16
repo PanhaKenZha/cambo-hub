@@ -17,7 +17,7 @@ class PublicPurposePagesTest extends TestCase
             ->assertSee('Less distance.')
             ->assertSee(route('vision'))
             ->assertSee(route('register'))
-            ->assertSee('images/backgrounds/cambodia-platform.webp')
+            ->assertSee('images/genomines/seedlings-closeup.webp')
             ->assertSee('images/icons/jobs-blue.svg');
     }
 
@@ -27,8 +27,8 @@ class PublicPurposePagesTest extends TestCase
             ->assertSee('A connected Cambodia.')
             ->assertSee('A shared future.')
             ->assertSee(route('mission'))
-            ->assertSee('images/backgrounds/business-directory.webp')
-            ->assertSee('images/backgrounds/education.webp');
+            ->assertSee('images/genomines/plant-nursery.webp')
+            ->assertSee('images/genomines/battery-pack.webp');
     }
 
     public function test_members_see_dashboard_and_account_links_instead_of_registration(): void

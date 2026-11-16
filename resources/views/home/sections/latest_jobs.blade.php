@@ -1,5 +1,5 @@
 <x-home-section :section="$section">
-    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <ul class="home-job-list grid gap-4 sm:grid-cols-2">
         @foreach($items as $item)
             <li>
                 <x-ui.card as="article" padding="p-5" interactive class="flex h-full flex-col gap-4">

@@ -25,6 +25,8 @@
 <link rel="icon" href="{{ asset('images/branding/cambo-hub-mark.svg') }}" type="image/svg+xml">
 <script>
     (function () {
+        // Lets CSS hide scroll-reveal content only when the script that reveals it can run.
+        document.documentElement.classList.add('js');
         try {
             var stored = localStorage.getItem('theme');
             var dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;

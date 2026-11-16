@@ -1,7 +1,7 @@
 <x-home-section :section="$section">
     @php($lead = $items->first())
-    <div class="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
-        <x-ui.card as="article" padding="p-0" interactive class="overflow-hidden">
+    <div class="home-news-layout grid gap-5 lg:grid-cols-[1.3fr_1fr]">
+        <x-ui.card as="article" padding="p-0" interactive class="home-news-lead overflow-hidden">
             @if($lead->imageUrl())
                 <div class="skeleton aspect-video"><img src="{{ $lead->imageUrl() }}" width="640" height="360" alt="" loading="lazy" data-placeholder class="size-full object-cover"></div>
             @endif

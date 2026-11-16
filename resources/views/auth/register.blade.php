@@ -1,5 +1,6 @@
 @extends('layouts.app')
-@section('auth-art', asset('images/content/platform-overview.webp'))
+@section('auth-art', asset('images/genomines/plant-nursery.webp'))
+@section('auth-art-alt', __('Young plants growing together in a nursery'))
 @section('title', 'Create account')
 @section('page')
 <x-ui.card as="section" aria-labelledby="register-title">

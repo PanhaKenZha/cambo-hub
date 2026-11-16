@@ -19,7 +19,7 @@ class ContactPageTest extends TestCase
     {
         $this->seed(CmsSeeder::class);
 
-        $this->get('/contact')->assertOk()->assertSee('Send us a message')->assertSee('images/backgrounds/customer-support.webp');
+        $this->get('/contact')->assertOk()->assertSee('Send us a message')->assertSee('images/genomines/seedlings-closeup.webp');
         $this->get('/')->assertOk()->assertSee(route('contact'));
     }
 

@@ -1,4 +1,6 @@
 @extends('layouts.app')
+@section('auth-art', asset('images/genomines/battery-pack.webp'))
+@section('auth-art-alt', __('A close view of a modern battery assembly'))
 @section('title', 'New password')
 @section('page')
 <x-ui.card as="section" aria-labelledby="reset-title">
