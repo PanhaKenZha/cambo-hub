@@ -15,6 +15,7 @@
     @forelse($sections as $section)
         @if($section['type'] === 'hero')
             @include('home.sections.hero', ['section' => $section, 'search' => $search, 'registrationOpen' => $registrationOpen, 'stats' => $stats])
+            <x-home-island-story :stats="$stats" :registration-open="$registrationOpen" />
             <x-home-growth-scene />
             <x-home-highlights :stats="$stats" />
         @else
