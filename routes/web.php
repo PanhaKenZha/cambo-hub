@@ -20,11 +20,13 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/search', SearchController::class)->middleware('throttle:60,1')->name('search');
 Route::get('/pages/{slug}', PageController::class)->where('slug', '[a-z0-9\-_]+')->name('pages.show');
 Route::middleware('module:jobs')->group(function () {
+    Route::get('/jobs', [JobController::class, 'index'])->name('jobs.index');
     Route::get('/jobs/{slug}', [JobController::class, 'show'])->where('slug', '[a-z0-9\-_]+')->name('jobs.show');
     Route::post('/jobs/{slug}/apply', [JobController::class, 'apply'])->where('slug', '[a-z0-9\-_]+')
         ->middleware(['auth', 'throttle:5,1'])->name('jobs.apply');
 });
 Route::middleware('module:news')->group(function () {
+    Route::get('/news', [NewsController::class, 'index'])->name('news.index');
     Route::get('/news/{slug}', [NewsController::class, 'show'])->where('slug', '[a-z0-9\-_]+')->name('news.show');
     Route::post('/news/{slug}/comments', [NewsController::class, 'comment'])->where('slug', '[a-z0-9\-_]+')
         ->middleware(['auth', 'throttle:5,1'])->name('news.comments.store');
